@@ -1,7 +1,7 @@
 {
     "name": "com.pedev.unity-discord-webhook",
     "version": "0.0.1",
-    "displayName": "Unity Discord Webhook",
+    "displayName": "Unity-DiscordWebhook",
     "description": "Unity-DiscordWebhook is a library that allows you to easily send messages and files to Discord channels using webhooks.",
     "keywords": [
         "discord",
