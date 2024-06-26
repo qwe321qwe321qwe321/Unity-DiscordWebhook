@@ -165,23 +165,20 @@ namespace DiscordWebhook {
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public async UniTask<bool> ExecuteAsync() {
+		public async UniTask<WebhookResponseResult> ExecuteAsync() {
 			// Required fields
 			switch (m_ChannelType) {
 				case ChannelType.TextChannel:
 					if (string.IsNullOrEmpty(m_Content)) {
-						Debug.LogError("Content is required for TextChannel webhook.");
-						return false;
+						return WebhookResponseResult.Failure("Content is required for TextChannel webhook.");
 					}
 					break;
 				case ChannelType.Forum:
 					if (string.IsNullOrEmpty(m_Content)) {
-						Debug.LogError("Content is required for Forum webhook.");
-						return false;
+						return WebhookResponseResult.Failure("Content is required for Forum webhook.");
 					}
 					if (string.IsNullOrEmpty(m_ThreadName)) {
-						Debug.LogError("ThreadName is required for Forum webhook.");
-						return false;
+						return WebhookResponseResult.Failure("ThreadName is required for Forum webhook.");
 					}
 					break;
 				default:
@@ -198,15 +195,19 @@ namespace DiscordWebhook {
 				Object.DestroyImmediate(screenshot);
 			}
 
-			using UnityWebRequest www = UnityWebRequest.Post(m_WebhookUrl, BuildFormData());
-			await www.SendWebRequest();
+			try {
 
-			if (www.result != UnityWebRequest.Result.Success) {
-				Debug.LogError("Error sending webhook: " + www.error);
-				return false;
-			} else {
-				Debug.Log($"Webhook sent successfully!\n{www.downloadHandler.text}");
-				return true;
+				using UnityWebRequest www = UnityWebRequest.Post(m_WebhookUrl, BuildFormData());
+				await www.SendWebRequest();
+
+				if (www.result != UnityWebRequest.Result.Success) {
+					return WebhookResponseResult.Failure("Error sending webhook: " + www.error);
+				} else {
+					//Debug.Log($"Webhook sent successfully. {www.downloadHandler.isDone} Response: " + www.downloadHandler.text);
+					return WebhookResponseResult.Success(www.downloadHandler.text);
+				}
+			} catch (Exception e) {
+				return WebhookResponseResult.Failure($"Error sending webhook with exception: {e}");
 			}
 		}
 
