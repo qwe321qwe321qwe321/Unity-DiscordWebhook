@@ -41,10 +41,11 @@ public class DiscordWebhookSample : MonoBehaviour {
 		if (GUILayout.Button("Bug report!")) {
 			string markdownContent = "# Bug report from user\nHere is the description.\n* 1\n* 2\n* 3";
 			DiscordWebhooks.Forum1
+				.SetThreadName("TITLE")
 				.SetContent(markdownContent)
 				.SetCaptureScreenshot(true) // capture screenshot and attach it.
 				.AddFile(Application.consoleLogPath)
-				.SetCompressAllFilesToZip(true) // compress the log file to zip.
+				.SetCompressAllFilesToZip(true, "LogFiles") // compress the log file to zip named "LogFiles.zip"
 				.ExecuteAsync()
 				.Forget(); // Forget() is used to ignore the async operation in UniTask.
 		}
