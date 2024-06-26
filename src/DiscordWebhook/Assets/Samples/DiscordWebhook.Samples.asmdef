@@ -1,0 +1,17 @@
+{
+    "name": "DiscordWebhook.Samples",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0327e914ee143aa4584be6683cb12f63",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
