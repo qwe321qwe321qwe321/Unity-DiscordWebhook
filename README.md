@@ -1,5 +1,8 @@
 # Unity-DiscordWebhook
 
+
+Unity-DiscordWebhook is a tool that allows you to easily send messages and files to Discord channels using webhooks. It provides a simple API for sending text messages, capturing and attaching screenshots, and even compressing and attaching log files for bug reports.
+
 ## Setup
 ### Requirement 
 * [Cysharp/UniTask](https://github.com/Cysharp/UniTask)
