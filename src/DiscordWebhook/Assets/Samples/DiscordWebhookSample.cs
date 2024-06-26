@@ -7,6 +7,7 @@ namespace DiscordWebhook.Samples {
 			if (GUILayout.Button("Say hello world!")) {
 				DiscordWebhooks.TextChannel1
 					.SetContent("Hello WORLD")
+					.SetErrorLogEnabled(true) // Log the error message since we don't catch the result.
 					.ExecuteAsync()
 					.Forget(); // Forget() is a helper method to ignore the result in UniTask.
 			}

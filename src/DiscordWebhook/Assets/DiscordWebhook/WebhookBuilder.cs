@@ -24,6 +24,8 @@ namespace DiscordWebhook {
 		private bool m_CaptureScreenshot;
 		private bool m_CompressAllFilesToZip;
 		private string m_ZipFileName;
+		
+		private bool m_ErrorLogEnabled;
 
 		/// <summary>
 		/// Create a new WebhookBuilder for TextChannel.
@@ -159,6 +161,11 @@ namespace DiscordWebhook {
 			m_CaptureScreenshot = captureScreenshot;
 			return this;
 		}
+		
+		public WebhookBuilder SetErrorLogEnabled(bool errorLogEnabled) {
+			m_ErrorLogEnabled = errorLogEnabled;
+			return this;
+		}
 
 		/// <summary>
 		/// Execute the webhook.
@@ -170,15 +177,27 @@ namespace DiscordWebhook {
 			switch (m_ChannelType) {
 				case ChannelType.TextChannel:
 					if (string.IsNullOrEmpty(m_Content)) {
-						return WebhookResponseResult.Failure("Content is required for TextChannel webhook.");
+						string error = "Content is required for TextChannel webhook.";
+						if (m_ErrorLogEnabled) {
+							Debug.LogError(error);
+						}
+						return WebhookResponseResult.Failure(error);
 					}
 					break;
 				case ChannelType.Forum:
 					if (string.IsNullOrEmpty(m_Content)) {
-						return WebhookResponseResult.Failure("Content is required for Forum webhook.");
+						string error = "Content is required for Forum webhook.";
+						if (m_ErrorLogEnabled) {
+							Debug.LogError(error);
+						}
+						return WebhookResponseResult.Failure(error);
 					}
 					if (string.IsNullOrEmpty(m_ThreadName)) {
-						return WebhookResponseResult.Failure("ThreadName is required for Forum webhook.");
+						string error = "ThreadName is required for Forum webhook.";
+						if (m_ErrorLogEnabled) {
+							Debug.LogError(error);
+						}
+						return WebhookResponseResult.Failure(error);
 					}
 					break;
 				default:
@@ -201,13 +220,21 @@ namespace DiscordWebhook {
 				await www.SendWebRequest();
 
 				if (www.result != UnityWebRequest.Result.Success) {
-					return WebhookResponseResult.Failure("Error sending webhook: " + www.error);
+					string error = "Error sending webhook: " + www.error;
+					if (m_ErrorLogEnabled) {
+						Debug.LogError(error);
+					}
+					return WebhookResponseResult.Failure(error);
 				} else {
 					//Debug.Log($"Webhook sent successfully. {www.downloadHandler.isDone} Response: " + www.downloadHandler.text);
 					return WebhookResponseResult.Success(www.downloadHandler.text);
 				}
 			} catch (Exception e) {
-				return WebhookResponseResult.Failure($"Error sending webhook with exception: {e}");
+				string error = "Error sending webhook with exception: " + e;
+				if (m_ErrorLogEnabled) {
+					Debug.LogError(error);
+				}
+				return WebhookResponseResult.Failure(error);
 			}
 		}
 
