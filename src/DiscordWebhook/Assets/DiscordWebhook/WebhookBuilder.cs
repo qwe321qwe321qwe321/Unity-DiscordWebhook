@@ -23,6 +23,7 @@ namespace DiscordWebhook {
 		private List<AdditionalFile> m_AdditionalFiles;
 		private bool m_CaptureScreenshot;
 		private bool m_CompressAllFilesToZip;
+		private string m_ZipFileName;
 
 		/// <summary>
 		/// Create a new WebhookBuilder for TextChannel.
@@ -143,8 +144,9 @@ namespace DiscordWebhook {
 		/// </summary>
 		/// <param name="compressAllFilesToZip"></param>
 		/// <returns></returns>
-		public WebhookBuilder SetCompressAllFilesToZip(bool compressAllFilesToZip) {
+		public WebhookBuilder SetCompressAllFilesToZip(bool compressAllFilesToZip, string zipFileName = null) {
 			m_CompressAllFilesToZip = compressAllFilesToZip;
+			m_ZipFileName = zipFileName;
 			return this;
 		}
 
@@ -227,7 +229,11 @@ namespace DiscordWebhook {
 
 			if (m_AdditionalFiles != null && m_AdditionalFiles.Count > 0) {
 				if (m_CompressAllFilesToZip) {
-					var zipFile = Util.CompressToZip("files.zip", m_AdditionalFiles.ToArray());
+					string fileName = string.IsNullOrWhiteSpace(m_ZipFileName) ? "files.zip" : m_ZipFileName;
+					if (!fileName.EndsWith(".zip")) {
+						fileName += ".zip";
+					}
+					var zipFile = Util.CompressToZip(fileName, m_AdditionalFiles.ToArray());
 					AddFileToForm(zipFile);
 				} else {
 					foreach (var file in m_AdditionalFiles) {
