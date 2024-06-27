@@ -141,6 +141,37 @@ namespace DiscordWebhook {
 			return this;
 		}
 
+
+		/// <summary>
+		/// [Optional] Add additional files to the message from file paths.
+		/// </summary>
+		/// <param name="filePaths"></param>
+		/// <returns></returns>
+		public WebhookBuilder AddFiles(params string[] filePaths) {
+			if (m_AdditionalFiles == null) {
+				m_AdditionalFiles = new List<AdditionalFile>();
+			}
+
+			foreach (var filePath in filePaths) {
+				m_AdditionalFiles.Add(AdditionalFile.FromPath(filePath));
+			}
+			return this;
+		}
+		
+		/// <summary>
+		/// [Optional] Add additional files to the message.
+		/// </summary>
+		/// <param name="files"></param>
+		/// <returns></returns>
+		public WebhookBuilder AddFiles(params AdditionalFile[] files) {
+			if (m_AdditionalFiles == null) {
+				m_AdditionalFiles = new List<AdditionalFile>();
+			}
+
+			m_AdditionalFiles.AddRange(files);
+			return this;
+		}
+
 		/// <summary>
 		/// [Optional] Set whether to compress all additional files to a zip file.
 		/// </summary>
