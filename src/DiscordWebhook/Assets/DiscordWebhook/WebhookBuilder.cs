@@ -206,7 +206,7 @@ namespace DiscordWebhook {
 			
 			if (m_CaptureScreenshot) {
 				// Capture screenshot will override attached image.
-				var screenshot = await Util.CaptureScreenshot();
+				var screenshot = await ScreenshotHelper.CaptureScreenshot();
 				if (screenshot) {
 					m_AttachedImage = AdditionalFile.FromTexture(screenshot);
 				}
@@ -261,7 +261,7 @@ namespace DiscordWebhook {
 					if (!fileName.EndsWith(".zip")) {
 						fileName += ".zip";
 					}
-					var zipFile = Util.CompressToZip(fileName, m_AdditionalFiles.ToArray());
+					var zipFile = AdditionalFile.CompressToZip(fileName, m_AdditionalFiles.ToArray());
 					AddFileToForm(zipFile);
 				} else {
 					foreach (var file in m_AdditionalFiles) {
