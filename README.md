@@ -21,14 +21,13 @@ https://github.com/qwe321qwe321qwe321/Unity-DiscordWebhook.git?path=src/DiscordW
 ```
 
 ## Getting Started
-DiscordWebhookSample.cs
+[DiscordWebhookSample.cs](/src/DiscordWebhook/Assets/Samples/DiscordWebhookSample.cs)
 ```cs
 public class DiscordWebhookSample : MonoBehaviour {
 	private void OnGUI() {
 		if (GUILayout.Button("Say hello world!")) {
 			DiscordWebhooks.TextChannel1
 				.SetContent("Hello WORLD")
-				.SetErrorLogEnabled(true) // Log the error message since we don't catch the result.
 				.ExecuteAsync()
 				.Forget(); // Forget() is a helper method to ignore the result in UniTask.
 		}
@@ -45,6 +44,7 @@ public class DiscordWebhookSample : MonoBehaviour {
 		WebhookResponseResult result = await DiscordWebhooks.TextChannel1
 			.SetContent("Look!")
 			.SetCaptureScreenshot(true) // capture screenshot and attach it.
+			.DisableLogging(true) // We handle the logging by ourselves in this case.
 			.ExecuteAsync();
 
 		if (result.isSuccess) {
@@ -57,21 +57,20 @@ public class DiscordWebhookSample : MonoBehaviour {
 	}
 	
 	private async void CreateBugReportTheadToForum() {
-		string markdownContent = "# Bug report from user\nHere is the description.\n* 1\n* 2\n* 3";
+		string markdownContent = "# Bug report from user\nHere is the description.\n" + SystemInfoHelper.GetSystemInfoInMarkdownList();
 		WebhookResponseResult result = await DiscordWebhooks.Forum1
 			.SetThreadName("TITLE")
 			.SetContent(markdownContent)
 			.SetCaptureScreenshot(true) // capture screenshot and attach it.
-			.AddFile(Application.consoleLogPath)
-			.SetCompressAllFilesToZip(true, "LogFiles") // compress the log file to zip named "LogFiles.zip"
+			.AddFile(Application.consoleLogPath) // add log file.
+			.AddFile("systemInfo.txt", Encoding.UTF8.GetBytes(SystemInfoHelper.GetSystemInfoInMarkdownList())) // add system info.
+			.SetCompressAllFilesToZip(true, "LogFiles") // compress the all files to a zip named "LogFiles.zip"
 			.ExecuteAsync();
 		
 		if (result.isSuccess) {
 			Debug.Log($"Success! {result.response}");
 			Debug.Log(result.GetMessageURL(DiscordWebhooks.ServerId));
 			Application.OpenURL(result.GetMessageURL(DiscordWebhooks.ServerId));
-		} else {
-			Debug.LogError(result.errorMessage);
 		}
 	}
 }
