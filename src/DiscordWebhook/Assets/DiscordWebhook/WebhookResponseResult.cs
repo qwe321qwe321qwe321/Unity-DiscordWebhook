@@ -37,15 +37,23 @@ namespace DiscordWebhook {
     
     public static class WebhookResponseExtensions {
         /// <summary>
-        /// Get the message URL from the response. Need serverId to construct the URL.
+        /// Get the message URL from the response. Return null if response doesn't have a valid response object.
+        /// Need serverId to construct the URL.
         /// </summary>
         public static string GetMessageURL(this WebhookResponseResult responseResult, string serverId) {
-            if (responseResult.isSuccess && responseResult.response.HasValue) {
+            if (responseResult.HasResponse()) {
                 return $"https://discord.com/channels/{serverId}/{responseResult.response.Value.channel_id}/{responseResult.response.Value.id}";
             }
             
             // Not able to get message URL if response is null or failed.
             return null;
+        }
+        
+        /// <summary>
+        /// Check if the response has a valid response object.
+        /// </summary>
+        public static bool HasResponse(this WebhookResponseResult responseResult) {
+            return responseResult.isSuccess && responseResult.response.HasValue;
         }
     }
     

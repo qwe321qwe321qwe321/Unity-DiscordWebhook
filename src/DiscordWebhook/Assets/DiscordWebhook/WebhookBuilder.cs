@@ -25,7 +25,7 @@ namespace DiscordWebhook {
 		private bool m_CompressAllFilesToZip;
 		private string m_ZipFileName;
 		
-		private bool m_ErrorLogEnabled;
+		private bool m_DisableLogging;
 
 		/// <summary>
 		/// Create a new WebhookBuilder for TextChannel.
@@ -140,11 +140,12 @@ namespace DiscordWebhook {
 			m_AdditionalFiles.Add(file);
 			return this;
 		}
-		
+
 		/// <summary>
 		/// [Optional] Set whether to compress all additional files to a zip file.
 		/// </summary>
 		/// <param name="compressAllFilesToZip"></param>
+		/// <param name="zipFileName"></param>
 		/// <returns></returns>
 		public WebhookBuilder SetCompressAllFilesToZip(bool compressAllFilesToZip, string zipFileName = null) {
 			m_CompressAllFilesToZip = compressAllFilesToZip;
@@ -162,8 +163,24 @@ namespace DiscordWebhook {
 			return this;
 		}
 		
-		public WebhookBuilder SetErrorLogEnabled(bool errorLogEnabled) {
-			m_ErrorLogEnabled = errorLogEnabled;
+		/// <summary>
+		/// [Optional] Set whether to enable error log when something goes wrong. Default is true.
+		/// </summary>
+		/// <param name="enabled"></param>
+		/// <returns></returns>
+		[Obsolete("SetErrorLogEnabled is deprecated, please use DisableLogging instead.")]
+		public WebhookBuilder SetErrorLogEnabled(bool enabled) {
+			m_DisableLogging = !enabled;
+			return this;
+		}
+		
+		/// <summary>
+		/// [Optional] Set whether to disable logging.
+		/// </summary>
+		/// <param name="disabled"></param>
+		/// <returns></returns>
+		public WebhookBuilder DisableLogging(bool disabled) {
+			m_DisableLogging = disabled;
 			return this;
 		}
 
@@ -178,7 +195,7 @@ namespace DiscordWebhook {
 				case ChannelType.TextChannel:
 					if (string.IsNullOrEmpty(m_Content)) {
 						string error = "Content is required for TextChannel webhook.";
-						if (m_ErrorLogEnabled) {
+						if (!m_DisableLogging) {
 							Debug.LogError(error);
 						}
 						return WebhookResponseResult.Failure(error);
@@ -187,14 +204,14 @@ namespace DiscordWebhook {
 				case ChannelType.Forum:
 					if (string.IsNullOrEmpty(m_Content)) {
 						string error = "Content is required for Forum webhook.";
-						if (m_ErrorLogEnabled) {
+						if (!m_DisableLogging) {
 							Debug.LogError(error);
 						}
 						return WebhookResponseResult.Failure(error);
 					}
 					if (string.IsNullOrEmpty(m_ThreadName)) {
 						string error = "ThreadName is required for Forum webhook.";
-						if (m_ErrorLogEnabled) {
+						if (!m_DisableLogging) {
 							Debug.LogError(error);
 						}
 						return WebhookResponseResult.Failure(error);
@@ -221,7 +238,7 @@ namespace DiscordWebhook {
 
 				if (www.result != UnityWebRequest.Result.Success) {
 					string error = "Error sending webhook: " + www.error;
-					if (m_ErrorLogEnabled) {
+					if (!m_DisableLogging) {
 						Debug.LogError(error);
 					}
 					return WebhookResponseResult.Failure(error);
@@ -231,7 +248,7 @@ namespace DiscordWebhook {
 				}
 			} catch (Exception e) {
 				string error = "Error sending webhook with exception: " + e;
-				if (m_ErrorLogEnabled) {
+				if (!m_DisableLogging) {
 					Debug.LogError(error);
 				}
 				return WebhookResponseResult.Failure(error);

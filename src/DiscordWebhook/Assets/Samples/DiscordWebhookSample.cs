@@ -8,7 +8,6 @@ namespace DiscordWebhook.Samples {
 			if (GUILayout.Button("Say hello world!")) {
 				DiscordWebhooks.TextChannel1
 					.SetContent("Hello WORLD")
-					.SetErrorLogEnabled(true) // Log the error message since we don't catch the result.
 					.ExecuteAsync()
 					.Forget(); // Forget() is a helper method to ignore the result in UniTask.
 			}
@@ -25,6 +24,7 @@ namespace DiscordWebhook.Samples {
 			WebhookResponseResult result = await DiscordWebhooks.TextChannel1
 				.SetContent("Look!")
 				.SetCaptureScreenshot(true) // capture screenshot and attach it.
+				.DisableLogging(true) // We handle the logging by ourselves in this case.
 				.ExecuteAsync();
 
 			if (result.isSuccess) {
@@ -51,8 +51,6 @@ namespace DiscordWebhook.Samples {
 				Debug.Log($"Success! {result.response}");
 				Debug.Log(result.GetMessageURL(DiscordWebhooks.ServerId));
 				Application.OpenURL(result.GetMessageURL(DiscordWebhooks.ServerId));
-			} else {
-				Debug.LogError(result.errorMessage);
 			}
 		}
 	}
