@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Text;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace DiscordWebhook.Samples {
@@ -36,13 +37,14 @@ namespace DiscordWebhook.Samples {
 		}
 		
 		private async void CreateBugReportTheadToForum() {
-			string markdownContent = "# Bug report from user\nHere is the description.\n* 1\n* 2\n* 3";
+			string markdownContent = "# Bug report from user\nHere is the description.\n" + SystemInfoHelper.GetSystemInfoInMarkdownList();
 			WebhookResponseResult result = await DiscordWebhooks.Forum1
 				.SetThreadName("TITLE")
 				.SetContent(markdownContent)
 				.SetCaptureScreenshot(true) // capture screenshot and attach it.
-				.AddFile(Application.consoleLogPath)
-				.SetCompressAllFilesToZip(true, "LogFiles") // compress the log file to zip named "LogFiles.zip"
+				.AddFile(Application.consoleLogPath) // add log file.
+				.AddFile("systemInfo.txt", Encoding.UTF8.GetBytes(SystemInfoHelper.GetSystemInfoInMarkdownList())) // add system info.
+				.SetCompressAllFilesToZip(true, "LogFiles") // compress the all files to a zip named "LogFiles.zip"
 				.ExecuteAsync();
 			
 			if (result.isSuccess) {
