@@ -27,10 +27,10 @@ Unity-DiscordWebhook is a library that allows you to easily send messages and fi
 ### Requirement 
 * (Optional) [Cysharp/UniTask](https://github.com/Cysharp/UniTask)
 	* We recommend using UniTask for asynchronous programming. However, you can use the library without it, we provide Unity Coroutine API as well.
-
+	* If your UniTask is not installed from [Unity Package Manager](https://docs.unity3d.com/Manual/upm-ui.html), add the scripting define symbol `DISCORD_WEBHOOK_UNITASK_SUPPORT` to Project Settings.
 
 ### Installation
-Install via package manager.
+Install via [Unity Package Manager](https://docs.unity3d.com/Manual/upm-ui.html).
 
 ```
 https://github.com/qwe321qwe321qwe321/Unity-DiscordWebhook.git?path=src/DiscordWebhook/Assets/DiscordWebhook
