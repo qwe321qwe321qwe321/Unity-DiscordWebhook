@@ -8,7 +8,7 @@ Unity-DiscordWebhook is a library that allows you to easily send messages and fi
 * [Builder pattern for creating a message.](#getting-started)
 * Awaitable API with [UniTask](https://github.com/Cysharp/UniTask)
 * Unity Coroutine API. (IEnumerator and callback)
-* Helpful methods for creating a bug report.
+* Helper methods for creating a bug report.
   * [Attach files by file path or byte array.](#create-a-post-in-a-forum-with-screenshots-and-log-files)
   * [Attach images by Texture2D.](/src/DiscordWebhook/Assets/DiscordWebhook/WebhookBuilder.cs#L120)
   * [Capture and attach screenshots by setting a flag.](#create-a-post-in-a-forum-with-screenshots-and-log-files)
