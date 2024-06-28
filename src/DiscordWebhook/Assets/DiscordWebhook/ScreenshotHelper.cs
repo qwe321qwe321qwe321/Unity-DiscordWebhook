@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-#if UNITASK_SUPPORT
+#if DISCORD_WEBHOOK_UNITASK_SUPPORT
 using Cysharp.Threading.Tasks;
 #endif
 
@@ -18,7 +18,7 @@ namespace DiscordWebhook {
 			resultCallback?.Invoke(ScreenCapture.CaptureScreenshotAsTexture());
 		}
 		
-		#if UNITASK_SUPPORT
+		#if DISCORD_WEBHOOK_UNITASK_SUPPORT
 		/// <summary>
 		/// Capture a screenshot and return the Texture2D.
 		/// </summary>

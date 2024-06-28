@@ -15,7 +15,7 @@
         {
             "name": "com.cysharp.unitask",
             "expression": "",
-            "define": "UNITASK_SUPPORT"
+            "define": "DISCORD_WEBHOOK_UNITASK_SUPPORT"
         }
     ],
     "noEngineReferences": false

@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
-#if UNITASK_SUPPORT
+#if DISCORD_WEBHOOK_UNITASK_SUPPORT
 using System.Text;
 using Cysharp.Threading.Tasks;
 #endif
@@ -12,7 +12,7 @@ namespace DiscordWebhook.Samples {
 		public string forumWebhookUrl = "your_webhook_url_here";
 		public string serverId = "not_necessary_server_id";
 		
-#if UNITASK_SUPPORT
+#if DISCORD_WEBHOOK_UNITASK_SUPPORT
 		private void OnGUI() {
 			if (GUILayout.Button("Say hello world! (UniTask)")) {
 				WebhookBuilder.CreateTextChannel(textChannelWebhookUrl)

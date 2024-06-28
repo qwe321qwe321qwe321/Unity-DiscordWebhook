@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Object = UnityEngine.Object;
 
-#if UNITASK_SUPPORT
+#if DISCORD_WEBHOOK_UNITASK_SUPPORT
 using Cysharp.Threading.Tasks;
 #endif
 
@@ -266,7 +266,7 @@ namespace DiscordWebhook {
 			}
 		}
 
-#if UNITASK_SUPPORT
+#if DISCORD_WEBHOOK_UNITASK_SUPPORT
 		/// <summary>
 		/// Execute the webhook with UniTask.
 		/// </summary>
