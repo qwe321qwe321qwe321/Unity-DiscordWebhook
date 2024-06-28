@@ -1,9 +1,13 @@
 ﻿using System;
-using Cysharp.Threading.Tasks;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using Object = UnityEngine.Object;
+
+#if UNITASK_SUPPORT
+using Cysharp.Threading.Tasks;
+#endif
 
 namespace DiscordWebhook {
 	public enum ChannelType {
@@ -214,42 +218,66 @@ namespace DiscordWebhook {
 			m_DisableLogging = disabled;
 			return this;
 		}
-
+		
 		/// <summary>
-		/// Execute the webhook.
+		/// Execute the webhook with coroutine and the result will be returned in the callback.
+		/// The monoBehaviour is needed to run the coroutine.
+		/// </summary>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		public Coroutine ExecuteCoroutine(MonoBehaviour coroutineRunner, Action<WebhookResponseResult> onComplete) {
+			return coroutineRunner.StartCoroutine(ExecuteIEnumerator(onComplete));
+		}
+		
+		/// <summary>
+		/// Return the IEnumerator to execute the webhook.
+		/// </summary>
+		/// <param name="onComplete"></param>
+		/// <returns></returns>
+		public IEnumerator ExecuteIEnumerator(Action<WebhookResponseResult> onComplete) {
+			if (CheckFieldErrors(out var error)) {
+				if (!m_DisableLogging) {
+					Debug.LogError(error);
+				}
+				var result = WebhookResponseResult.Failure(error);
+				onComplete?.Invoke(result);
+				yield break;
+			}
+			
+			if (m_CaptureScreenshot) {
+				// Capture screenshot will override attached image.
+				Texture2D screenshot = null;
+				yield return ScreenshotHelper.CaptureScreenshot(capturedTexture => { screenshot = capturedTexture; });
+				if (screenshot) {
+					m_AttachedImage = AdditionalFile.FromTexture(screenshot);
+				}
+				Object.DestroyImmediate(screenshot);
+			}
+
+			using (UnityWebRequest www = UnityWebRequest.Post(m_WebhookUrl, BuildFormData())) {
+				yield return www.SendWebRequest();
+				try {
+					var result = ResolveRequestResult(www);
+					onComplete?.Invoke(result);
+				} catch (Exception e) {
+					var result = ResolveRequestException(e);
+					onComplete?.Invoke(result);
+				}
+			}
+		}
+
+#if UNITASK_SUPPORT
+		/// <summary>
+		/// Execute the webhook with UniTask.
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		public async UniTask<WebhookResponseResult> ExecuteAsync() {
-			// Required fields
-			switch (m_ChannelType) {
-				case ChannelType.TextChannel:
-					if (string.IsNullOrEmpty(m_Content)) {
-						string error = "Content is required for TextChannel webhook.";
-						if (!m_DisableLogging) {
-							Debug.LogError(error);
-						}
-						return WebhookResponseResult.Failure(error);
-					}
-					break;
-				case ChannelType.Forum:
-					if (string.IsNullOrEmpty(m_Content)) {
-						string error = "Content is required for Forum webhook.";
-						if (!m_DisableLogging) {
-							Debug.LogError(error);
-						}
-						return WebhookResponseResult.Failure(error);
-					}
-					if (string.IsNullOrEmpty(m_ThreadName)) {
-						string error = "ThreadName is required for Forum webhook.";
-						if (!m_DisableLogging) {
-							Debug.LogError(error);
-						}
-						return WebhookResponseResult.Failure(error);
-					}
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
+			if (CheckFieldErrors(out var error)) {
+				if (!m_DisableLogging) {
+					Debug.LogError(error);
+				}
+				return WebhookResponseResult.Failure(error);
 			}
 			
 			if (m_CaptureScreenshot) {
@@ -258,32 +286,73 @@ namespace DiscordWebhook {
 				if (screenshot) {
 					m_AttachedImage = AdditionalFile.FromTexture(screenshot);
 				}
-
 				Object.DestroyImmediate(screenshot);
 			}
 
 			try {
-
 				using UnityWebRequest www = UnityWebRequest.Post(m_WebhookUrl, BuildFormData());
 				await www.SendWebRequest();
-
-				if (www.result != UnityWebRequest.Result.Success) {
-					string error = "Error sending webhook: " + www.error;
-					if (!m_DisableLogging) {
-						Debug.LogError(error);
-					}
-					return WebhookResponseResult.Failure(error);
-				} else {
-					//Debug.Log($"Webhook sent successfully. {www.downloadHandler.isDone} Response: " + www.downloadHandler.text);
-					return WebhookResponseResult.Success(www.downloadHandler.text);
-				}
+				return ResolveRequestResult(www);
 			} catch (Exception e) {
-				string error = "Error sending webhook with exception: " + e;
+				return ResolveRequestException(e);
+			}
+		}
+#endif
+
+		private bool CheckFieldErrors(out string errorMessage) {
+			// Required fields
+			switch (m_ChannelType) {
+				case ChannelType.TextChannel:
+					if (string.IsNullOrEmpty(m_Content)) {
+						errorMessage = "Content is required for TextChannel webhook.";
+						return true;
+					}
+					break;
+				case ChannelType.Forum:
+					if (string.IsNullOrEmpty(m_Content)) {
+						errorMessage = "Content is required for Forum webhook.";
+						return true;
+					}
+					if (string.IsNullOrEmpty(m_ThreadName)) {
+						errorMessage = "ThreadName is required for Forum webhook.";
+						return true;
+					}
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+
+			errorMessage = null;
+			return false;
+		}
+		
+		private WebhookResponseResult ResolveRequestResult(UnityWebRequest request) {
+			if (!request.isDone) {
+				string error = "Error sending webhook: Request is not done.";
 				if (!m_DisableLogging) {
 					Debug.LogError(error);
 				}
 				return WebhookResponseResult.Failure(error);
 			}
+			
+			if (request.result != UnityWebRequest.Result.Success) {
+				string error = "Error sending webhook: " + request.error;
+				if (!m_DisableLogging) {
+					Debug.LogError(error);
+				}
+				return WebhookResponseResult.Failure(error);
+			} else {
+				//Debug.Log($"Webhook sent successfully. {www.downloadHandler.isDone} Response: " + www.downloadHandler.text);
+				return WebhookResponseResult.Success(request.downloadHandler.text);
+			}
+		}
+		
+		private WebhookResponseResult ResolveRequestException(Exception e) {
+			string error = "Error sending webhook with exception: " + e;
+			if (!m_DisableLogging) {
+				Debug.LogError(error);
+			}
+			return WebhookResponseResult.Failure(error);
 		}
 
 		private WWWForm BuildFormData() {
