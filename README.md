@@ -3,17 +3,19 @@
 
 Unity-DiscordWebhook is a library that allows you to easily send messages and files to Discord channels using webhooks. It provides a simple API for sending text messages, capturing and attaching screenshots, and even compressing and attaching log files for bug reports.
 
+## Features
 * [Sending messages and create posts/threads to text channels and forums.](#getting-started)
 * [Builder pattern for creating a message.](#getting-started)
 * Awaitable API with [UniTask](https://github.com/Cysharp/UniTask)
 * Unity Coroutine API. (IEnumerator and callback)
 * Helpful methods for creating a bug report.
   * [Attach files by file path or byte array.](#create-a-post-in-a-forum-with-screenshots-and-log-files)
-  * Attach images by Texture2D.
+  * [Attach images by Texture2D.](/src/DiscordWebhook/Assets/DiscordWebhook/WebhookBuilder.cs#L120)
   * [Capture and attach screenshots by setting a flag.](#create-a-post-in-a-forum-with-screenshots-and-log-files)
   * [Compress all attached files to a zip file by setting a flag.](#create-a-post-in-a-forum-with-screenshots-and-log-files) 
   * [Get the message URL after sending a message.](#create-a-post-in-a-forum-with-screenshots-and-log-files)
 
+## Table of Contents
 - [Setup](#setup)
   - [Requirement](#requirement)
   - [Installation](#installation)
@@ -110,6 +112,7 @@ private void CreateBugReportTheadToForum() {
 }
 ```
 
+## Screenshots
 | Text Channel | Forum |
 |--|--|
 | ![image](https://github.com/qwe321qwe321qwe321/Unity-DiscordWebhook/assets/23000374/613f729b-f738-48da-a37f-c5729cbe37f0)| ![image](https://github.com/qwe321qwe321qwe321/Unity-DiscordWebhook/assets/23000374/4b0a1b76-1059-4885-b19b-6409e4aecb29)|
