@@ -98,6 +98,10 @@ namespace DiscordWebhook {
         public string content_type;
         public string placeholder;
         public int placeholder_version;
+        
+        public override string ToString() {
+            return $"(Attachment) {JsonUtility.ToJson(this)}";
+        }
     }
 
     [System.Serializable]
@@ -111,5 +115,49 @@ namespace DiscordWebhook {
         public bool bot;
         //public object global_name;
         //public object clan;
+        
+        public override string ToString() {
+            return $"(Author) {JsonUtility.ToJson(this)}";
+        }
+    }
+    
+    [System.Serializable]
+    public struct ChannelObject {
+        public Snowflake id;
+        public int type;
+        public Snowflake last_message_id;
+        public int flags;
+        public Snowflake guild_id;
+        public string name;
+        public Snowflake parent_id;
+        public int rate_limit_per_user;
+        //public object topic;
+        public int position;
+        //public object[] permission_overwrites;
+        public bool nsfw;
+        public TagObject[] available_tags;
+        //public object default_reaction_emoji;
+        //public object default_sort_order;
+        public int default_forum_layout;
+        //public object icon_emoji;
+        //public object theme_color;
+        public string template;
+        
+        public override string ToString() {
+            return $"(ChannelObject) {JsonUtility.ToJson(this)}";
+        }
+    }
+
+    [System.Serializable]
+    public struct TagObject {
+        public Snowflake id;
+        public string name;
+        public bool moderated;
+        //public object emoji_id;
+        //public object emoji_name;
+        
+        public override string ToString() {
+            return $"(TagObject) {JsonUtility.ToJson(this)}";
+        }
     }
 }

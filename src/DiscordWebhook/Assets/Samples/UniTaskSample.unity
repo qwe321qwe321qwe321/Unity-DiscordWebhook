@@ -246,6 +246,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c64a04ebbb0a4251b08ceb7ee6fc80a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  textChannelWebhookUrl: your_webhook_url_here
+  forumWebhookUrl: your_webhook_url_here
+  serverId: not_necessary_server_id
+  forumTagIds: 4ef330a64b9bb60124152c940574b501
 --- !u!4 &1515027728
 Transform:
   m_ObjectHideFlags: 0
