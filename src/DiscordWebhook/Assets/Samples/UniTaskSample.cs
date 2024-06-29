@@ -67,7 +67,7 @@ namespace DiscordWebhook.Samples {
 			WebhookResponseResult result = await WebhookBuilder.CreateForum(forumWebhookUrl)
 				.SetThreadName("TITLE")
 				.SetContent(markdownContent)
-				.AddTags(forumTagIds) // Add tags to the thread. (You have to get the tag IDs from the forum first.)
+				.AddTags(forumTagIds) // Add tags to the thread. (You have to get the tag IDs by DiscordBotApi upfront.)
 				.SetCaptureScreenshot(true) // capture screenshot and attach it.
 				.AddFile(Application.consoleLogPath) // add log file.
 				.AddFile("systemInfo.txt", Encoding.UTF8.GetBytes(SystemInfoHelper.GetSystemInfoInMarkdownList())) // add system info.

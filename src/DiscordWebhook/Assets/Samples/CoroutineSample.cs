@@ -8,6 +8,11 @@ namespace DiscordWebhook.Samples {
 		public string forumWebhookUrl = "your_webhook_url_here";
 		public string serverId = "not_necessary_server_id";
 		
+		public ulong[] forumTagIds = new[] {
+			123456789012345678UL, 
+			123132132132132132UL
+		};
+		
 		private void OnGUI() {
 			if (GUILayout.Button("Say hello world!")) {
 				WebhookBuilder.CreateTextChannel(textChannelWebhookUrl)
@@ -51,6 +56,7 @@ namespace DiscordWebhook.Samples {
 			WebhookBuilder.CreateForum(forumWebhookUrl)
 				.SetThreadName("TITLE")
 				.SetContent(markdownContent)
+				.AddTags(forumTagIds) // Add tags to the thread. (You have to get the tag IDs by DiscordBotApi upfront.)
 				.SetCaptureScreenshot(true) // capture screenshot and attach it.
 				.AddFile(Application.consoleLogPath) // add log file.
 				.AddFile("systemInfo.txt", Encoding.UTF8.GetBytes(SystemInfoHelper.GetSystemInfoInMarkdownList())) // add system info.

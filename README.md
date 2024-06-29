@@ -8,11 +8,13 @@ Unity-DiscordWebhook is a library that allows you to easily send messages and fi
 * [Builder pattern for creating a message.](#getting-started)
 * Awaitable API with [UniTask](https://github.com/Cysharp/UniTask)
 * Unity Coroutine API. (IEnumerator and callback)
+* A few Discord Bot API to query the server and channel information. 
+  * See [DiscordBotApi.cs](/src/DiscordWebhook/Assets/DiscordWebhook/Utility/DiscordBotApi.cs).
 * Helper methods for creating a bug report.
   * [Attach files by file path or byte array.](#create-a-post-in-a-forum-with-screenshots-and-log-files)
   * [Attach images by Texture2D.](/src/DiscordWebhook/Assets/DiscordWebhook/WebhookBuilder.cs#L120)
   * [Capture and attach screenshots by setting a flag.](#create-a-post-in-a-forum-with-screenshots-and-log-files)
-  * [Compress all attached files to a zip file by setting a flag.](#create-a-post-in-a-forum-with-screenshots-and-log-files) 
+  * [Compress all attached files to a zip file by setting a flag.](#create-a-post-in-a-forum-with-screenshots-and-log-files)
   * [Get the message URL after sending a message.](#create-a-post-in-a-forum-with-screenshots-and-log-files)
 
 ## Table of Contents
@@ -22,6 +24,7 @@ Unity-DiscordWebhook is a library that allows you to easily send messages and fi
 - [Getting Started](#getting-started)
   - [Send a message to a text channel](#send-a-message-to-a-text-channel)
   - [Create a post in a forum with screenshots and log files](#create-a-post-in-a-forum-with-screenshots-and-log-files)
+  - [How to get the forum tag IDs](#how-to-get-the-forum-tag-ids)
  
 ## Setup
 ### Requirement 
@@ -66,6 +69,7 @@ private async UniTaskVoid CreateBugReportTheadToForum() {
 	WebhookResponseResult result = await WebhookBuilder.CreateForum(forumWebhookUrl)
 		.SetThreadName("TITLE")
 		.SetContent(markdownContent)
+        .AddTags(forumTagIds) // Add tags to the thread. (You have to get the tag IDs by DiscordBotApi upfront.)
 		.SetCaptureScreenshot(true) // capture screenshot and attach it.
 		.AddFile(Application.consoleLogPath) // add log file.
 		.AddFile("systemInfo.txt", Encoding.UTF8.GetBytes(SystemInfoHelper.GetSystemInfoInMarkdownList())) // add system info.
@@ -92,6 +96,7 @@ private void CreateBugReportTheadToForum() {
 	WebhookBuilder.CreateForum(forumWebhookUrl)
 		.SetThreadName("TITLE")
 		.SetContent(markdownContent)
+        .AddTags(forumTagIds) // Add tags to the thread. (You have to get the tag IDs by DiscordBotApi upfront.)
 		.SetCaptureScreenshot(true) // capture screenshot and attach it.
 		.AddFile(Application.consoleLogPath) // add log file.
 		.AddFile("systemInfo.txt", Encoding.UTF8.GetBytes(SystemInfoHelper.GetSystemInfoInMarkdownList())) // add system info.
@@ -109,6 +114,23 @@ private void CreateBugReportTheadToForum() {
 			}
 		}
 	}
+}
+```
+
+### How to get the forum tag IDs
+1. Create a Discord Bot and invite it to your server. (See [Discord Developer Poral: Getting Started](https://discord.com/developers/docs/quick-start/getting-started))
+2. Get your bot token.
+3. Get your forum channel ID.
+
+Then you can dump the forum tag IDs by using the [DiscordBotApi](/src/DiscordWebhook/Assets/DiscordWebhook/Utility/DiscordBotApi.cs) we provide.
+```csharp
+var tags = await DiscordBotApi.GetForumAvailableTags("bot_token", "forum_channel_id");
+if (tags != null) {
+    foreach (var tagObject in tags) {
+        Debug.Log($"Tag: {tagObject}");
+    }
+} else {
+    Debug.LogError("Failed to get tags.");
 }
 ```
 
