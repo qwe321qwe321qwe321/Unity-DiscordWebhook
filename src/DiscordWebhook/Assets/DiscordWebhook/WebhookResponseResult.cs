@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Snowflake = System.UInt64;
 
 namespace DiscordWebhook {
     public struct WebhookResponseResult {
@@ -60,7 +61,7 @@ namespace DiscordWebhook {
     [System.Serializable]
     public struct ResponseObject {
         public int type;
-        public long channel_id;
+        public Snowflake channel_id;
         public string content;
         //public object[] mentions;
         //public object[] mention_roles;
@@ -70,23 +71,26 @@ namespace DiscordWebhook {
         //public string edited_timestamp;
         public int flags;
         //public object[] components;
-        public long id;
+        public Snowflake id;
         public Author author;
         public bool pinned;
         public bool mention_everyone;
         public bool tts;
-        public long webhook_id;
+        public Snowflake webhook_id;
 
         public override string ToString() {
             return $"(ResponseObject) {JsonUtility.ToJson(this)}";
         }
     }
 
+    /// <summary>
+    /// https://discord.com/developers/docs/resources/channel#attachment-object
+    /// </summary>
     [System.Serializable]
     public struct Attachment {
-        public long id;
+        public Snowflake id;
         public string filename;
-        public long size;
+        public int size;
         public string url;
         public string proxy_url;
         public int width;
@@ -98,7 +102,7 @@ namespace DiscordWebhook {
 
     [System.Serializable]
     public struct Author {
-        public long id;
+        public Snowflake id;
         public string username;
         //public object avatar;
         //public object discriminator;

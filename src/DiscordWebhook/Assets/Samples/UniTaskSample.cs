@@ -11,6 +11,11 @@ namespace DiscordWebhook.Samples {
 		public string textChannelWebhookUrl = "your_webhook_url_here";
 		public string forumWebhookUrl = "your_webhook_url_here";
 		public string serverId = "not_necessary_server_id";
+
+		public ulong[] forumTagIds = new[] {
+			123456789012345678UL, 
+			123132132132132132UL
+		};
 		
 #if DISCORD_WEBHOOK_UNITASK_SUPPORT
 		private void OnGUI() {
@@ -41,6 +46,11 @@ namespace DiscordWebhook.Samples {
 
 			if (result.isSuccess) {
 				Debug.Log($"Success! {result.response}");
+				if (result.response.HasValue) {
+					Debug.Log(result.response.Value.id.DumpSnowflake());
+					Debug.Log(result.response.Value.channel_id.DumpSnowflake());
+					Debug.Log(result.response.Value.webhook_id.DumpSnowflake());
+				}
 				
 				string url = result.GetMessageURL(serverId);
 				Debug.Log(url);
@@ -57,6 +67,7 @@ namespace DiscordWebhook.Samples {
 			WebhookResponseResult result = await WebhookBuilder.CreateForum(forumWebhookUrl)
 				.SetThreadName("TITLE")
 				.SetContent(markdownContent)
+				.AddTags(forumTagIds) // Add tags to the thread. (You have to get the tag IDs from the forum first.)
 				.SetCaptureScreenshot(true) // capture screenshot and attach it.
 				.AddFile(Application.consoleLogPath) // add log file.
 				.AddFile("systemInfo.txt", Encoding.UTF8.GetBytes(SystemInfoHelper.GetSystemInfoInMarkdownList())) // add system info.
@@ -65,7 +76,6 @@ namespace DiscordWebhook.Samples {
 			
 			if (result.isSuccess) {
 				Debug.Log($"Success! {result.response}");
-				
 				string url = result.GetMessageURL(serverId);
 				Debug.Log(url);
 				if (url != null) {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using Object = UnityEngine.Object;
+using Snowflake = System.UInt64;
 
 #if DISCORD_WEBHOOK_UNITASK_SUPPORT
 using Cysharp.Threading.Tasks;
@@ -25,6 +26,7 @@ namespace DiscordWebhook {
 		private string m_Username;
 		private AdditionalFile m_AttachedImage;
 		private List<AdditionalFile> m_AdditionalFiles;
+		private List<Snowflake> m_AppliedTags;
 		private bool m_CaptureScreenshot;
 		private bool m_CompressAllFilesToZip;
 		private string m_ZipFileName;
@@ -74,7 +76,7 @@ namespace DiscordWebhook {
 		}
 
 		/// <summary>
-		/// [Required for Forum] Set the thread name/title of the message.
+		/// [Required for Forum] Set the thread name/title of the message. (Only available for Forum)
 		/// </summary>
 		/// <param name="threadName"></param>
 		/// <returns></returns>
@@ -220,6 +222,49 @@ namespace DiscordWebhook {
 		}
 		
 		/// <summary>
+		/// [Optional] Add a tag to the message. (Only available for Forum)
+		/// </summary>
+		/// <param name="tagId"></param>
+		/// <returns></returns>
+		public WebhookBuilder AddTag(Snowflake tagId) {
+			if (m_AppliedTags == null) {
+				m_AppliedTags = new List<Snowflake>();
+			}
+
+			m_AppliedTags.Add(tagId);
+			return this;
+		}
+		
+		/// <summary>
+		/// [Optional] Add tags to the message. (Only available for Forum)
+		/// </summary>
+		/// <param name="tagIds"></param>
+		/// <returns></returns>
+		public WebhookBuilder AddTags(params Snowflake[] tagIds) {
+			if (m_AppliedTags == null) {
+				m_AppliedTags = new List<Snowflake>();
+			}
+
+			m_AppliedTags.AddRange(tagIds);
+			return this;
+		}
+		
+		/// <summary>
+		/// [Optional] Clear and set tags to the message. (Only available for Forum)
+		/// </summary>
+		/// <param name="tagIds"></param>
+		/// <returns></returns>
+		public WebhookBuilder SetTags(params Snowflake[] tagIds) {
+			if (m_AppliedTags == null) {
+				m_AppliedTags = new List<Snowflake>();
+			}
+
+			m_AppliedTags.Clear();
+			m_AppliedTags.AddRange(tagIds);
+			return this;
+		}
+		
+		/// <summary>
 		/// Execute the webhook with coroutine and the result will be returned in the callback.
 		/// The monoBehaviour is needed to run the coroutine.
 		/// </summary>
@@ -356,16 +401,24 @@ namespace DiscordWebhook {
 		}
 
 		private WWWForm BuildFormData() {
-			WWWForm form = new();
+			var jsonPayload = new Dictionary<string, object>();
 			if (m_Username != null) {
-				form.AddField("username", m_Username);
+				jsonPayload.Add("username", m_Username);
 			}
 
-			form.AddField("content", m_Content);
+			jsonPayload.Add("content", m_Content);
 
 			if (m_ChannelType == ChannelType.Forum) {
-				form.AddField("thread_name", m_ThreadName);
+				jsonPayload.Add("thread_name", m_ThreadName);
+				
+				// tags are only available for Forum.
+				if (m_AppliedTags != null && m_AppliedTags.Count > 0) {
+					jsonPayload.Add("applied_tags",  m_AppliedTags);
+				}
 			}
+			
+			WWWForm form = new();
+			form.AddField("payload_json", MiniJSON.Serialize(jsonPayload));
 
 			int fileIndex = 1;
 			if (m_AttachedImage.IsValid) {
