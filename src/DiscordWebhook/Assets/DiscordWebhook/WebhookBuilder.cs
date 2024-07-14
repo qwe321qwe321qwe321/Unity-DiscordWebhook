@@ -32,6 +32,10 @@ namespace DiscordWebhook {
 		private string m_ZipFileName;
 		
 		private bool m_DisableLogging;
+		private bool m_PreventAppendThreadNameInContent;
+
+		public const int MaximumThreadName = 100;
+		public const int MaximumUsername = 80;
 
 		/// <summary>
 		/// Create a new WebhookBuilder for TextChannel.
@@ -77,6 +81,7 @@ namespace DiscordWebhook {
 
 		/// <summary>
 		/// [Required for Forum] Set the thread name/title of the message. (Only available for Forum)
+		/// Maximum length is 100 characters, and it will be truncated and appended with "..." if it exceeds the limit.
 		/// </summary>
 		/// <param name="threadName"></param>
 		/// <returns></returns>
@@ -84,9 +89,19 @@ namespace DiscordWebhook {
 			m_ThreadName = threadName;
 			return this;
 		}
+		
+		/// <summary>
+		/// [Optional] Set whether to prevent appending the thread name to the content if it exceeds the limit.
+		/// </summary>
+		/// <param name="disable"></param>
+		/// <returns></returns>
+		public WebhookBuilder SetPreventAppendThreadNameInContent(bool disable) {
+			m_PreventAppendThreadNameInContent = disable;
+			return this;
+		}
 
 		/// <summary>
-		/// [Optional] Set the username of the message.
+		/// [Optional] Set the username of the message. Maximum length is 80 characters.
 		/// </summary>
 		/// <param name="username"></param>
 		/// <returns></returns>
@@ -403,12 +418,22 @@ namespace DiscordWebhook {
 		private WWWForm BuildFormData() {
 			var jsonPayload = new Dictionary<string, object>();
 			if (m_Username != null) {
+				if (m_Username.Length > MaximumUsername) {
+					m_Username = m_Username.Substring(0, MaximumUsername);
+				}
 				jsonPayload.Add("username", m_Username);
 			}
-
-			jsonPayload.Add("content", m_Content);
-
+			
 			if (m_ChannelType == ChannelType.Forum) {
+				if (m_ThreadName.Length > MaximumThreadName) {
+					// Append the thread name to the content if it exceeds the limit.
+					if (!m_PreventAppendThreadNameInContent) {
+						string extraContent = m_ThreadName.Substring(MaximumThreadName - 3, m_ThreadName.Length - (MaximumThreadName - 3)) + "\n";
+						m_Content = extraContent + m_Content;
+					}
+					
+					m_ThreadName = m_ThreadName.Substring(0, (MaximumThreadName - 3)) + "...";
+				}
 				jsonPayload.Add("thread_name", m_ThreadName);
 				
 				// tags are only available for Forum.
@@ -416,6 +441,9 @@ namespace DiscordWebhook {
 					jsonPayload.Add("applied_tags",  m_AppliedTags);
 				}
 			}
+			
+			// TODO: Content length check.
+			jsonPayload.Add("content", m_Content);
 			
 			WWWForm form = new();
 			form.AddField("payload_json", MiniJSON.Serialize(jsonPayload));
