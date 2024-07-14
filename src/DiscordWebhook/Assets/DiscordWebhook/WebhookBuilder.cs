@@ -418,23 +418,29 @@ namespace DiscordWebhook {
 		private WWWForm BuildFormData() {
 			var jsonPayload = new Dictionary<string, object>();
 			if (m_Username != null) {
-				if (m_Username.Length > MaximumUsername) {
-					m_Username = m_Username.Substring(0, MaximumUsername);
+				string username = m_Username;
+				if (username.Length > MaximumUsername) {
+					username = username.Substring(0, MaximumUsername);
 				}
-				jsonPayload.Add("username", m_Username);
+				jsonPayload.Add("username", username);
 			}
+
+			string content = m_Content;
 			
 			if (m_ChannelType == ChannelType.Forum) {
+				string threadName = m_ThreadName;
+
 				if (m_ThreadName.Length > MaximumThreadName) {
 					// Append the thread name to the content if it exceeds the limit.
 					if (!m_PreventAppendThreadNameInContent) {
-						string extraContent = m_ThreadName.Substring(MaximumThreadName - 3, m_ThreadName.Length - (MaximumThreadName - 3)) + "\n";
-						m_Content = extraContent + m_Content;
+						string extraContent = threadName.Substring(MaximumThreadName - 3, threadName.Length - (MaximumThreadName - 3)) + "\n";
+						content = extraContent + content;
 					}
 					
-					m_ThreadName = m_ThreadName.Substring(0, (MaximumThreadName - 3)) + "...";
+					threadName = threadName.Substring(0, (MaximumThreadName - 3)) + "...";
 				}
-				jsonPayload.Add("thread_name", m_ThreadName);
+
+				jsonPayload.Add("thread_name", threadName);
 				
 				// tags are only available for Forum.
 				if (m_AppliedTags != null && m_AppliedTags.Count > 0) {
@@ -443,7 +449,7 @@ namespace DiscordWebhook {
 			}
 			
 			// TODO: Content length check.
-			jsonPayload.Add("content", m_Content);
+			jsonPayload.Add("content", content);
 			
 			WWWForm form = new();
 			form.AddField("payload_json", MiniJSON.Serialize(jsonPayload));
