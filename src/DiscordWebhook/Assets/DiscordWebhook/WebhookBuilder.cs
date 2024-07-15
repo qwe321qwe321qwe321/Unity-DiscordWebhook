@@ -36,6 +36,7 @@ namespace DiscordWebhook {
 
 		public const int MaximumThreadName = 100;
 		public const int MaximumUsername = 80;
+		public const int MaximumContent = 2000;
 
 		/// <summary>
 		/// Create a new WebhookBuilder for TextChannel.
@@ -448,7 +449,11 @@ namespace DiscordWebhook {
 				}
 			}
 			
-			// TODO: Content length check.
+			if (content.Length > MaximumContent) {
+				// Truncate the content if it exceeds the limit.
+				content = content.Substring(0, MaximumContent - 3) + "...";
+				// TODO: Append the truncated content to the attached file or comment below.
+			}
 			jsonPayload.Add("content", content);
 			
 			WWWForm form = new();

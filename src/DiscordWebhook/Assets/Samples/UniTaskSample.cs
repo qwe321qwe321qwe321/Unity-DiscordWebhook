@@ -1,41 +1,37 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 #if DISCORD_WEBHOOK_UNITASK_SUPPORT
 using System.Text;
 using Cysharp.Threading.Tasks;
+#else
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 #endif
 
 namespace DiscordWebhook.Samples {
-	public class UniTaskSample : MonoBehaviour {
-		// There must be a better way to deal with these secrets, but for the sake of simplicity, I'll just put it here.
-		public string textChannelWebhookUrl = "your_webhook_url_here";
-		public string forumWebhookUrl = "your_webhook_url_here";
-		public string serverId = "not_necessary_server_id";
-
-		public ulong[] forumTagIds = new[] {
-			123456789012345678UL, 
-			123132132132132132UL
-		};
-		
 #if DISCORD_WEBHOOK_UNITASK_SUPPORT
-		private void OnGUI() {
-			if (GUILayout.Button("Say hello world! (UniTask)")) {
-				WebhookBuilder.CreateTextChannel(textChannelWebhookUrl)
-					.SetContent("Hello WORLD")
-					.ExecuteAsync()
-					.Forget(); // Forget() is a helper method to ignore the result in UniTask.
-			}
-			if (GUILayout.Button("Screenshot! (UniTask)")) {
-				SendScreenshotToChannel()
-					.Forget();
-			}
-			
-			if (GUILayout.Button("Bug report! (UniTask)")) {
-				CreateBugReportTheadToForum()
-					.Forget();
-			}
+	public class UniTaskSample : WebhookSample {
+		protected override void SayHelloWorldToTextChannel() {
+			WebhookBuilder.CreateTextChannel(textChannelWebhookUrl)
+				.SetContent("Hello WORLD")
+				.ExecuteAsync()
+				.Forget(); // Forget() is a helper method to ignore the result in UniTask.
 		}
-		
+
+		protected override void SendScreenshotToTextChannel() {
+			SendScreenshotToChannel()
+				.Forget();
+		}
+
+		protected override void CreatePostToForum() {
+			CreateBugReportTheadToForum(m_Payload.username, m_Payload.title)
+				.Forget();
+		}
+
+		protected override void CreateBugReportToForum() {
+			CreateThreadToForum(m_Payload.username, m_Payload.title, m_Payload.content)
+				.Forget();
+		}
 
 		private async UniTaskVoid SendScreenshotToChannel() {
 			WebhookResponseResult result = await WebhookBuilder.CreateTextChannel(textChannelWebhookUrl)
@@ -62,10 +58,11 @@ namespace DiscordWebhook.Samples {
 			}
 		}
 		
-		private async UniTaskVoid CreateBugReportTheadToForum() {
+		private async UniTaskVoid CreateBugReportTheadToForum(string username, string title) {
 			string markdownContent = "# Bug report from user\nHere is the description.\n" + SystemInfoHelper.GetSystemInfoInMarkdownList();
 			WebhookResponseResult result = await WebhookBuilder.CreateForum(forumWebhookUrl)
-				.SetThreadName("TITLE")
+				.SetUsername(username)
+				.SetThreadName(title)
 				.SetContent(markdownContent)
 				.AddTags(forumTagIds) // Add tags to the thread. (You have to get the tag IDs by DiscordBotApi upfront.)
 				.SetCaptureScreenshot(true) // capture screenshot and attach it.
@@ -83,7 +80,22 @@ namespace DiscordWebhook.Samples {
 				}
 			}
 		}
+		
+		private async UniTaskVoid CreateThreadToForum(string username, string title, string content) {
+			WebhookResponseResult result = await WebhookBuilder.CreateForum(forumWebhookUrl)
+				.SetUsername(username)
+				.SetThreadName(title)
+				.SetContent(content)
+				.ExecuteAsync();
+			
+			if (result.isSuccess) {
+				Debug.Log($"Success! {result.response}");
+				string url = result.GetMessageURL(serverId);
+				Debug.Log(url);
+			}
+		}
 #else
+	public class UniTaskSample : MonoBehaviour {
 		private void Start() {
 			// Show a dialog to install UniTask if it's not installed.
 			Debug.LogError("cysharp/UniTask is not installed. Please install it to run this sample. https://github.com/Cysharp/UniTask");
