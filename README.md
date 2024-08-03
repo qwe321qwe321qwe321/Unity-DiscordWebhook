@@ -136,6 +136,8 @@ if (tags != null) {
 ```
 
 ## Who's using Unity-DiscordWebhook?
+If you want your game added to or removed from this list just open an [issue](https://github.com/qwe321qwe321qwe321/qwe321qwe321qwe321.github.io/issues).
+
 ### [Bionic Bay](https://store.steampowered.com/app/1928690/Bionic_Bay/)
 Bug reporter for the level editor.
 
