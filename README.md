@@ -119,7 +119,7 @@ private void CreateBugReportTheadToForum() {
 ```
 
 ### How to get the forum tag IDs
-1. Create a Discord Bot and invite it to your server. (See [Discord Developer Poral: Getting Started](https://discord.com/developers/docs/quick-start/getting-started))
+1. Create a Discord Bot and invite it to your server. (See [Discord Developer Portal: Getting Started](https://discord.com/developers/docs/quick-start/getting-started))
 2. Get your bot token.
 3. Get your forum channel ID.
 
@@ -143,7 +143,7 @@ Bug reporter for the level editor.
 
 | In-game UI | Discord |
 | ----------- | --------|
-| ![![bb-ui](https://github.com/user-attachments/assets/351b2051-d0a1-4394-ac8d-7b621640262b) | ![bb-dc](https://github.com/user-attachments/assets/71f4e41b-a4fe-4a6a-83ee-362dbd53c603) |
+| ![bb-ui](https://github.com/user-attachments/assets/351b2051-d0a1-4394-ac8d-7b621640262b) | ![bb-dc](https://github.com/user-attachments/assets/71f4e41b-a4fe-4a6a-83ee-362dbd53c603) |
 
 ### [Minds Beneath us](https://store.steampowered.com/app/1610440/Minds_Beneath_Us/)
 In-game Bug Reporter for Beta-Testing.
