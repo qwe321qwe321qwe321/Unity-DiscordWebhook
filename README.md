@@ -135,12 +135,6 @@ if (tags != null) {
 }
 ```
 
-## Screenshots
-| Text Channel | Forum |
-|--|--|
-| ![image](https://github.com/qwe321qwe321qwe321/Unity-DiscordWebhook/assets/23000374/613f729b-f738-48da-a37f-c5729cbe37f0)| ![image](https://github.com/qwe321qwe321qwe321/Unity-DiscordWebhook/assets/23000374/4b0a1b76-1059-4885-b19b-6409e4aecb29)|
-
-
 ## Who's using Unity-DiscordWebhook?
 ### [Bionic Bay](https://store.steampowered.com/app/1928690/Bionic_Bay/)
 Bug reporter for the level editor.
