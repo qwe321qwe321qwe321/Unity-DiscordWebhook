@@ -25,6 +25,7 @@ Unity-DiscordWebhook is a library that allows you to easily send messages and fi
   - [Send a message to a text channel](#send-a-message-to-a-text-channel)
   - [Create a post in a forum with screenshots and log files](#create-a-post-in-a-forum-with-screenshots-and-log-files)
   - [How to get the forum tag IDs](#how-to-get-the-forum-tag-ids)
+- [Who's using Unity-DiscordWebhook?](#whos-using-unity-discordwebhook)
  
 ## Setup
 ### Requirement 
@@ -138,4 +139,35 @@ if (tags != null) {
 | Text Channel | Forum |
 |--|--|
 | ![image](https://github.com/qwe321qwe321qwe321/Unity-DiscordWebhook/assets/23000374/613f729b-f738-48da-a37f-c5729cbe37f0)| ![image](https://github.com/qwe321qwe321qwe321/Unity-DiscordWebhook/assets/23000374/4b0a1b76-1059-4885-b19b-6409e4aecb29)|
+
+
+## Who's using Unity-DiscordWebhook?
+### [Bionic Bay](https://store.steampowered.com/app/1928690/Bionic_Bay/)
+Bug reporter for the level editor.
+
+| In-game UI | Discord |
+| ----------- | --------|
+| ![![bb-ui](https://github.com/user-attachments/assets/351b2051-d0a1-4394-ac8d-7b621640262b) | ![bb-dc](https://github.com/user-attachments/assets/71f4e41b-a4fe-4a6a-83ee-362dbd53c603) |
+
+### [Minds Beneath us](https://store.steampowered.com/app/1610440/Minds_Beneath_Us/)
+In-game Bug Reporter for Beta-Testing.
+
+| In-game UI | Discord |
+| ----------- | --------|
+| <video src="https://github.com/user-attachments/assets/3b589bbe-ca01-4d02-8418-27f3df014d73"/> | ![mbu-dc](https://github.com/user-attachments/assets/ee1184ef-2475-437b-b353-eaca5a895af0) |
+
+
+### [Nine Sols](https://store.steampowered.com/app/1809540/_/)
+In-game Bug Reporter.
+
+![image](https://github.com/user-attachments/assets/a1a938de-0e39-433b-b410-d09254f86bbc)
+
+### [Autopanic Zero](https://store.steampowered.com/app/1423670/_/)
+Patch Notes Informer.
+
+![image](https://github.com/user-attachments/assets/fc628088-06b1-42cc-801a-d02cb8922f39)
+
+
+
+
 
