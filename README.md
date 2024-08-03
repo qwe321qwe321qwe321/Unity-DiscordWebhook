@@ -145,12 +145,13 @@ Bug reporter for the level editor.
 | ----------- | --------|
 | ![bb-ui](https://github.com/user-attachments/assets/351b2051-d0a1-4394-ac8d-7b621640262b) | ![bb-dc](https://github.com/user-attachments/assets/71f4e41b-a4fe-4a6a-83ee-362dbd53c603) |
 
-### [Minds Beneath us](https://store.steampowered.com/app/1610440/Minds_Beneath_Us/)
-In-game Bug Reporter for Beta-Testing.
+### [Minds Beneath Us](https://store.steampowered.com/app/1610440/Minds_Beneath_Us/)
+In-game Bug Reporter for playtesting.
 
 | In-game UI | Discord |
 | ----------- | --------|
-| <video src="https://github.com/user-attachments/assets/3b589bbe-ca01-4d02-8418-27f3df014d73"/> | ![mbu-dc](https://github.com/user-attachments/assets/ee1184ef-2475-437b-b353-eaca5a895af0) |
+| <video src="https://github.com/user-attachments/assets/3b589bbe-ca01-4d02-8418-27f3df014d73"/> | ![mbu-dc](https://github.com/user-attachments/assets/bfbcd605-107b-4660-ade5-2d7f637f3de7) |
+
 
 
 ### [Nine Sols](https://store.steampowered.com/app/1809540/_/)
