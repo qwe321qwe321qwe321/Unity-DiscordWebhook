@@ -7,7 +7,7 @@ Unity-DiscordWebhook is a library that allows you to easily send messages and fi
 * [Sending messages and create posts/threads to text channels and forums.](#getting-started)
 * [Builder pattern for creating a message.](#getting-started)
 * Awaitable API with [UniTask](https://github.com/Cysharp/UniTask)
-* Unity Coroutine API. (IEnumerator and callback)
+* Unity Coroutine and EditorCoroutine API. (IEnumerator and callback)
 * A few Discord Bot API to query the server and channel information. 
   * See [DiscordBotApi.cs](/src/DiscordWebhook/Assets/DiscordWebhook/Utility/DiscordBotApi.cs).
 * Helper methods for creating a bug report.
@@ -61,6 +61,18 @@ WebhookBuilder.CreateTextChannel(textChannelWebhookUrl)
     	// handle the result with callback.
 	}));
 ```
+
+[EditorCoroutineSample.cs](/src/DiscordWebhook/Assets/Samples/Editor/EditorCoroutineSample.cs)
+```csharp
+WebhookBuilder.CreateTextChannel(textChannelWebhookUrl)
+	.SetUsername("MyBot") // username is optional.
+	.SetContent("Hello WORLD") // content is required.
+	.ExecuteEditorCoroutine((result) => { // No need a MonoBehaviour to run.
+    	// handle the result with callback.
+	}));
+```
+
+
 
 ### Create a post in a forum with screenshots and log files
 [UniTaskSample.cs](/src/DiscordWebhook/Assets/Samples/UniTaskSample.cs)
