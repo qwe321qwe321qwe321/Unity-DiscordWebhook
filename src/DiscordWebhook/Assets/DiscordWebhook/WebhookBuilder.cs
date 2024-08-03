@@ -10,6 +10,10 @@ using Snowflake = System.UInt64;
 using Cysharp.Threading.Tasks;
 #endif
 
+#if UNITY_EDITOR && DISCORD_WEBHOOK_EDITOR_COROUTINE_SUPPORT
+using Unity.EditorCoroutines.Editor;
+#endif
+
 namespace DiscordWebhook {
 	public enum ChannelType {
 		TextChannel,
@@ -289,6 +293,19 @@ namespace DiscordWebhook {
 		public Coroutine ExecuteCoroutine(MonoBehaviour coroutineRunner, Action<WebhookResponseResult> onComplete) {
 			return coroutineRunner.StartCoroutine(ExecuteIEnumerator(onComplete));
 		}
+		
+#if UNITY_EDITOR && DISCORD_WEBHOOK_EDITOR_COROUTINE_SUPPORT
+		/// <summary>
+		/// Execute the webhook with coroutine and the result will be returned in the callback.
+		/// The monoBehaviour is needed to run the coroutine.
+		/// </summary>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		public EditorCoroutine ExecuteEditorCoroutine(Action<WebhookResponseResult> onComplete) {
+			return EditorCoroutineUtility.StartCoroutineOwnerless(ExecuteIEnumerator(onComplete));
+		}
+
+#endif
 		
 		/// <summary>
 		/// Return the IEnumerator to execute the webhook.

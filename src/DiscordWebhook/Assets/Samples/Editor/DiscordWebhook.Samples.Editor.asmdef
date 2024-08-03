@@ -1,11 +1,13 @@
 {
-    "name": "DiscordWebhook",
+    "name": "DiscordWebhook.Samples.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:0327e914ee143aa4584be6683cb12f63",
         "GUID:478a2357cc57436488a56e564b08d223"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
@@ -13,11 +15,6 @@
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [
-        {
-            "name": "com.cysharp.unitask",
-            "expression": "",
-            "define": "DISCORD_WEBHOOK_UNITASK_SUPPORT"
-        },
         {
             "name": "com.unity.editorcoroutines",
             "expression": "",
