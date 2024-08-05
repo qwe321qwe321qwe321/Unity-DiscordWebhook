@@ -162,8 +162,7 @@ In-game Bug Reporter for playtesting.
 
 | In-game UI | Discord |
 | ----------- | --------|
-| <video src="https://github.com/user-attachments/assets/3b589bbe-ca01-4d02-8418-27f3df014d73"/> | ![mbu-dc](https://github.com/user-attachments/assets/bfbcd605-107b-4660-ade5-2d7f637f3de7) |
-
+| <video src="https://github.com/user-attachments/assets/3b589bbe-ca01-4d02-8418-27f3df014d73"/> | ![mbu-dc](https://github.com/user-attachments/assets/7a4041cc-60e6-47bd-b6ac-46ccc29ca953) |
 
 
 ### [Nine Sols](https://store.steampowered.com/app/1809540/_/)
