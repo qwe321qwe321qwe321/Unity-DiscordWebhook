@@ -16,7 +16,7 @@ Unity-DiscordWebhook is a library that allows you to easily send messages and fi
   * [Capture and attach screenshots by setting a flag.](#create-a-post-in-a-forum-with-screenshots-and-log-files)
   * [Compress all attached files to a zip file by setting a flag.](#create-a-post-in-a-forum-with-screenshots-and-log-files)
   * [Get the message URL after sending a message.](#create-a-post-in-a-forum-with-screenshots-and-log-files)
-
+ 
 ## Table of Contents
 - [Setup](#setup)
   - [Requirement](#requirement)
@@ -147,18 +147,20 @@ if (tags != null) {
 }
 ```
 
-## Who's using Unity-DiscordWebhook?
-If you want your game added to or removed from this list just open an [issue](https://github.com/qwe321qwe321qwe321/qwe321qwe321qwe321.github.io/issues).
+## Use Cases
+***You should never directly expose your webhook token in a public product, as this poses a risk of allowing anyone to send any message through the webhook. The use cases here are either a limited scope of confidential users or implementing thier own backends to prevent from exposing the token to clients.***
+
+> If you want your use case added to or removed from this list just open an [issue](https://github.com/qwe321qwe321qwe321/qwe321qwe321qwe321.github.io/issues).
 
 ### [Bionic Bay](https://store.steampowered.com/app/1928690/Bionic_Bay/)
-Bug reporter for the level editor.
+Bug reporter for the **in-house** level editor.
 
 | In-game UI | Discord |
 | ----------- | --------|
 | ![bb-ui](https://github.com/user-attachments/assets/351b2051-d0a1-4394-ac8d-7b621640262b) | ![bb-dc](https://github.com/user-attachments/assets/71f4e41b-a4fe-4a6a-83ee-362dbd53c603) |
 
 ### [Minds Beneath Us](https://store.steampowered.com/app/1610440/Minds_Beneath_Us/)
-In-game Bug Reporter for playtesting.
+In-game bug reporter for beta test.
 
 | In-game UI | Discord |
 | ----------- | --------|
@@ -166,16 +168,15 @@ In-game Bug Reporter for playtesting.
 
 
 ### [Nine Sols](https://store.steampowered.com/app/1809540/_/)
-In-game Bug Reporter.
+In-game bug reporter with their own backend.
 
 ![image](https://github.com/user-attachments/assets/a1a938de-0e39-433b-b410-d09254f86bbc)
 
 ### [Autopanic Zero](https://store.steampowered.com/app/1423670/_/)
-Patch Notes Informer.
+Patch notes informer in Unity Editor.
 
 ![image](https://github.com/user-attachments/assets/fc628088-06b1-42cc-801a-d02cb8922f39)
 
+---
 
-
-
-
+I actually wrote an article that introduces the implementation of bug reports using Discord webhooks, covering its advantages and caveats, but [it's in Chinese.](https://qwe321qwe321qwe321.github.io/posts/13673/).
