@@ -24,7 +24,7 @@ Unity-DiscordWebhook is a library that allows you to easily send messages and fi
 - [Getting Started](#getting-started)
   - [Send a message to a text channel](#send-a-message-to-a-text-channel)
   - [Create a post in a forum with screenshots and log files](#create-a-post-in-a-forum-with-screenshots-and-log-files)
-  - [How to get the forum tag IDs](#how-to-get-the-forum-tag-ids)
+  - [How do I get tag IDs from the forum?](#how-do-i-get-tag-ids-from-the-forum)
 - [Use Cases](#use-cases)
  
 ## Setup
@@ -130,7 +130,7 @@ private void CreateBugReportTheadToForum() {
 }
 ```
 
-### How to get the forum tag IDs
+### How do I get tag IDs from the forum?
 > If you need to send a post in the forum with specific tags, you might find that the API requires tag IDs you don't know. To get these tag IDs, follow the steps below. 
 > 
 > These steps are only for retrieving tag IDs and they will not change, so you can revoke the bot and remove the code once you have the tag IDs.
