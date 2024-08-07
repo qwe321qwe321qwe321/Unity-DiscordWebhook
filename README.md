@@ -25,7 +25,7 @@ Unity-DiscordWebhook is a library that allows you to easily send messages and fi
   - [Send a message to a text channel](#send-a-message-to-a-text-channel)
   - [Create a post in a forum with screenshots and log files](#create-a-post-in-a-forum-with-screenshots-and-log-files)
   - [How to get the forum tag IDs](#how-to-get-the-forum-tag-ids)
-- [Who's using Unity-DiscordWebhook?](#whos-using-unity-discordwebhook)
+- [Use Cases](#use-cases)
  
 ## Setup
 ### Requirement 
@@ -148,7 +148,7 @@ if (tags != null) {
 ```
 
 ## Use Cases
-***You should never directly expose your webhook token in a public product, as this poses a risk of allowing anyone to send any message through the webhook. The use cases here are either a limited scope of confidential users or implementing thier own backends to prevent from exposing the token to clients.***
+***CAVEAT: You should never directly expose your webhook token in a public product, as this poses a risk of allowing anyone to send any message through the webhook. The use cases here are either a limited scope of confidential users or implementing thier own backends to prevent from exposing the token to clients.***
 
 > If you want your use case added to or removed from this list just open an [issue](https://github.com/qwe321qwe321qwe321/qwe321qwe321qwe321.github.io/issues).
 
