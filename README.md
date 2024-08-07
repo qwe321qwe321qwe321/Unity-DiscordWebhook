@@ -133,7 +133,7 @@ private void CreateBugReportTheadToForum() {
 ### How to get the forum tag IDs
 > If you need to send a post in the forum with specific tags, you might find that the API requires tag IDs you don't know. To get these tag IDs, follow the steps below. 
 > 
-> These steps are only for retrieving tag IDs and they do not change, so you can revoke the bot and remove the code once you have the tag IDs.
+> These steps are only for retrieving tag IDs and they will not change, so you can revoke the bot and remove the code once you have the tag IDs.
 
 1. Create a Discord Bot and invite it to your server. (See [Discord Developer Portal: Getting Started](https://discord.com/developers/docs/quick-start/getting-started))
 2. Get your bot token.
