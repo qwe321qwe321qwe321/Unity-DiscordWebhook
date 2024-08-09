@@ -24,10 +24,10 @@ namespace DiscordWebhook.Samples {
             // Background window with scroll view.
             GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
             GUILayout.BeginVertical("box");
-            if (GUILayout.Button("Say hello world! (UniTask)")) {
+            if (GUILayout.Button("Say hello world!")) {
                  SayHelloWorldToTextChannel();
             }
-            if (GUILayout.Button("Screenshot! (UniTask)")) {
+            if (GUILayout.Button("Screenshot!")) {
                 SendScreenshotToTextChannel();
             }
 			
@@ -38,13 +38,17 @@ namespace DiscordWebhook.Samples {
             m_Payload.title = GUILayout.TextField(m_Payload.title);
             GUILayout.Label("Content");
             m_Payload.content = GUILayout.TextArea(m_Payload.content);
-			
-            if (GUILayout.Button("Create a post! (UniTask)")) {
-                CreateBugReportToForum();
+
+            if (GUILayout.Button("Send To Text Channel!")) {
+                SendPayloadToTextChannel();
             }
-			
-            if (GUILayout.Button("Bug report! (UniTask)")) {
-                CreatePostToForum();
+            
+            if (GUILayout.Button("Create a post!")) {
+                SendPayloadToForum();
+            }
+
+            if (GUILayout.Button("Create a Bug report post!")) {
+                CreateBugReportToForum();
             }
 			
             GUILayout.EndVertical();
@@ -53,7 +57,8 @@ namespace DiscordWebhook.Samples {
 
         protected abstract void SayHelloWorldToTextChannel();
         protected abstract void SendScreenshotToTextChannel();
-        protected abstract void CreatePostToForum();
+        protected abstract void SendPayloadToTextChannel();
+        protected abstract void SendPayloadToForum();
         protected abstract void CreateBugReportToForum();
     }
 }

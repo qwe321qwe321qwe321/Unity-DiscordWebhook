@@ -22,14 +22,22 @@ namespace DiscordWebhook.Samples {
 			SendScreenshotToChannel()
 				.Forget();
 		}
+		
+		protected override void SendPayloadToTextChannel() {
+			WebhookBuilder.CreateTextChannel(textChannelWebhookUrl)
+				.SetUsername(m_Payload.username)
+				.SetContent(m_Payload.content)
+				.ExecuteAsync()
+				.Forget();
+		}
 
-		protected override void CreatePostToForum() {
-			CreateBugReportTheadToForum(m_Payload.username, m_Payload.title)
+		protected override void SendPayloadToForum() {
+			CreateThreadToForum(m_Payload.username, m_Payload.title, m_Payload.content)
 				.Forget();
 		}
 
 		protected override void CreateBugReportToForum() {
-			CreateThreadToForum(m_Payload.username, m_Payload.title, m_Payload.content)
+			CreateBugReportTheadToForum(m_Payload.username, m_Payload.title)
 				.Forget();
 		}
 

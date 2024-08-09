@@ -32,7 +32,14 @@ namespace DiscordWebhook.Samples {
 			}
 		}
 
-		protected override void CreatePostToForum() {
+		protected override void SendPayloadToTextChannel() {
+			WebhookBuilder.CreateTextChannel(textChannelWebhookUrl)
+				.SetUsername(m_Payload.username)
+				.SetContent(m_Payload.content)
+				.ExecuteCoroutine(this, null);
+		}
+
+		protected override void SendPayloadToForum() {
 			WebhookBuilder.CreateForum(forumWebhookUrl)
 				.SetUsername(m_Payload.username)
 				.SetThreadName(m_Payload.title)
