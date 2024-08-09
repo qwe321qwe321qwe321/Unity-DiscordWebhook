@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Web;
 using UnityEngine;
 using UnityEngine.Networking;
 using Object = UnityEngine.Object;
@@ -24,7 +25,9 @@ namespace DiscordWebhook {
 		private ChannelType m_ChannelType;
 		private string m_WebhookUrl;
 		private string m_Content;
+		// Forum needs either a thread name or a thread id. 
 		private string m_ThreadName;
+		private Snowflake m_RepliedThreadId;
 
 		// optional
 		private string m_Username;
@@ -34,7 +37,8 @@ namespace DiscordWebhook {
 		private bool m_CaptureScreenshot;
 		private bool m_CompressAllFilesToZip;
 		private string m_ZipFileName;
-		
+
+		private bool m_DisableWaitingForResponse;
 		private bool m_DisableLogging;
 		private bool m_PreventAppendThreadNameInContent;
 
@@ -93,6 +97,17 @@ namespace DiscordWebhook {
 		public WebhookBuilder SetThreadName(string threadName) {
 			m_ThreadName = threadName;
 			return this;
+		}
+
+		/// <summary>
+		/// [Required for Forum] Set the thread id of the message you want to reply to. (Only available for Forum)
+		/// </summary>
+		/// <param name="threadId"></param>
+		/// <returns></returns>
+		public WebhookBuilder SetRepliedThreadId(Snowflake threadId) {
+			m_RepliedThreadId = threadId;
+			return this;
+			
 		}
 		
 		/// <summary>
@@ -221,6 +236,16 @@ namespace DiscordWebhook {
 		}
 		
 		/// <summary>
+		/// [Optional] Set whether to disable waiting for response. Default is false.
+		/// </summary>
+		/// <param name="disabled"></param>
+		/// <returns></returns>
+		public WebhookBuilder DisableWaitingForResponse(bool disabled) {
+			m_DisableWaitingForResponse = disabled;
+			return this;
+		}
+		
+		/// <summary>
 		/// [Optional] Set whether to enable error log when something goes wrong. Default is true.
 		/// </summary>
 		/// <param name="enabled"></param>
@@ -332,7 +357,7 @@ namespace DiscordWebhook {
 				Object.DestroyImmediate(screenshot);
 			}
 
-			using (UnityWebRequest www = UnityWebRequest.Post(m_WebhookUrl, BuildFormData())) {
+			using (UnityWebRequest www = UnityWebRequest.Post(BuildUri(), BuildFormData())) {
 				yield return www.SendWebRequest();
 				try {
 					var result = ResolveRequestResult(www);
@@ -368,7 +393,7 @@ namespace DiscordWebhook {
 			}
 
 			try {
-				using UnityWebRequest www = UnityWebRequest.Post(m_WebhookUrl, BuildFormData());
+				using UnityWebRequest www = UnityWebRequest.Post(BuildUri(), BuildFormData());
 				await www.SendWebRequest();
 				return ResolveRequestResult(www);
 			} catch (Exception e) {
@@ -391,8 +416,8 @@ namespace DiscordWebhook {
 						errorMessage = "Content is required for Forum webhook.";
 						return true;
 					}
-					if (string.IsNullOrEmpty(m_ThreadName)) {
-						errorMessage = "ThreadName is required for Forum webhook.";
+					if (string.IsNullOrEmpty(m_ThreadName) && m_RepliedThreadId == 0) {
+						errorMessage = "ThreadName or ThreadId is required for Forum webhook.";
 						return true;
 					}
 					break;
@@ -432,6 +457,18 @@ namespace DiscordWebhook {
 			}
 			return WebhookResponseResult.Failure(error);
 		}
+		
+		private Uri BuildUri() {
+			var uriBuilder = new UriBuilder(m_WebhookUrl);
+			var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+			query["wait"] = m_DisableWaitingForResponse ? "false" : "true";
+			if (m_RepliedThreadId != 0) {
+				query["thread_id"] = m_RepliedThreadId.ToString();
+			}
+			uriBuilder.Query = query.ToString();
+			Debug.Log(uriBuilder.Uri);
+			return uriBuilder.Uri;
+		}
 
 		private WWWForm BuildFormData() {
 			var jsonPayload = new Dictionary<string, object>();
@@ -446,23 +483,25 @@ namespace DiscordWebhook {
 			string content = m_Content;
 			
 			if (m_ChannelType == ChannelType.Forum) {
-				string threadName = m_ThreadName;
+				if (string.IsNullOrWhiteSpace(m_ThreadName) == false) {
+					string threadName = m_ThreadName;
 
-				if (m_ThreadName.Length > MaximumThreadName) {
-					// Append the thread name to the content if it exceeds the limit.
-					if (!m_PreventAppendThreadNameInContent) {
-						string extraContent = threadName.Substring(MaximumThreadName - 3, threadName.Length - (MaximumThreadName - 3)) + "\n";
-						content = extraContent + content;
+					if (m_ThreadName.Length > MaximumThreadName) {
+						// Append the thread name to the content if it exceeds the limit.
+						if (!m_PreventAppendThreadNameInContent) {
+							string extraContent = threadName.Substring(MaximumThreadName - 3, threadName.Length - (MaximumThreadName - 3)) + "\n";
+							content = extraContent + content;
+						}
+						
+						threadName = threadName.Substring(0, (MaximumThreadName - 3)) + "...";
 					}
-					
-					threadName = threadName.Substring(0, (MaximumThreadName - 3)) + "...";
-				}
 
-				jsonPayload.Add("thread_name", threadName);
-				
-				// tags are only available for Forum.
-				if (m_AppliedTags != null && m_AppliedTags.Count > 0) {
-					jsonPayload.Add("applied_tags",  m_AppliedTags);
+					jsonPayload.Add("thread_name", threadName);
+					
+					// tags are only available for Forum.
+					if (m_AppliedTags != null && m_AppliedTags.Count > 0) {
+						jsonPayload.Add("applied_tags",  m_AppliedTags);
+					}
 				}
 			}
 			

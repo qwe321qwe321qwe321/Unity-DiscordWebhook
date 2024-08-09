@@ -39,16 +39,11 @@ namespace DiscordWebhook.Samples {
 				.ExecuteCoroutine(this, null);
 		}
 
-		protected override void SendPayloadToForum() {
+		protected override void SendPayloadToForumAndReply() {
 			WebhookBuilder.CreateForum(forumWebhookUrl)
 				.SetUsername(m_Payload.username)
 				.SetThreadName(m_Payload.title)
 				.SetContent(m_Payload.content)
-				.AddTags(forumTagIds) // Add tags to the thread. (You have to get the tag IDs by DiscordBotApi upfront.)
-				.SetCaptureScreenshot(true) // capture screenshot and attach it.
-				.AddFile(Application.consoleLogPath) // add log file.
-				.AddFile("systemInfo.txt", Encoding.UTF8.GetBytes(SystemInfoHelper.GetSystemInfoInMarkdownList())) // add system info.
-				.SetCompressAllFilesToZip(true, "LogFiles") // compress the all files to a zip named "LogFiles.zip"
 				.ExecuteCoroutine(this, OnComplete);
 			
 			void OnComplete(WebhookResponseResult result) {
@@ -57,8 +52,14 @@ namespace DiscordWebhook.Samples {
 					
 					string url = result.GetMessageURL(serverId);
 					Debug.Log(url);
-					if (url != null) {
-						Application.OpenURL(url);
+					
+					if (result.response.HasValue) {
+						var channelId = result.response.Value.channel_id;
+						WebhookBuilder.CreateForum(forumWebhookUrl)
+							.SetUsername("Reply Bot")
+							.SetRepliedThreadId(channelId)
+							.SetContent("Thank you for your report!")
+							.ExecuteCoroutine(this, null);
 					}
 				}
 			}

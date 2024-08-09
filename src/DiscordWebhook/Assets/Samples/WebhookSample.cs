@@ -43,8 +43,8 @@ namespace DiscordWebhook.Samples {
                 SendPayloadToTextChannel();
             }
             
-            if (GUILayout.Button("Create a post!")) {
-                SendPayloadToForum();
+            if (GUILayout.Button("Create a post and reply it!")) {
+                SendPayloadToForumAndReply();
             }
 
             if (GUILayout.Button("Create a Bug report post!")) {
@@ -58,7 +58,7 @@ namespace DiscordWebhook.Samples {
         protected abstract void SayHelloWorldToTextChannel();
         protected abstract void SendScreenshotToTextChannel();
         protected abstract void SendPayloadToTextChannel();
-        protected abstract void SendPayloadToForum();
+        protected abstract void SendPayloadToForumAndReply();
         protected abstract void CreateBugReportToForum();
     }
 }

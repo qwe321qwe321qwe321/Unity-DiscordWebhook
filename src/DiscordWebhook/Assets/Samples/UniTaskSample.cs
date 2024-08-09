@@ -31,8 +31,8 @@ namespace DiscordWebhook.Samples {
 				.Forget();
 		}
 
-		protected override void SendPayloadToForum() {
-			CreateThreadToForum(m_Payload.username, m_Payload.title, m_Payload.content)
+		protected override void SendPayloadToForumAndReply() {
+			CreateThreadToForumAndReplyIt(m_Payload.username, m_Payload.title, m_Payload.content)
 				.Forget();
 		}
 
@@ -89,7 +89,7 @@ namespace DiscordWebhook.Samples {
 			}
 		}
 		
-		private async UniTaskVoid CreateThreadToForum(string username, string title, string content) {
+		private async UniTaskVoid CreateThreadToForumAndReplyIt(string username, string title, string content) {
 			WebhookResponseResult result = await WebhookBuilder.CreateForum(forumWebhookUrl)
 				.SetUsername(username)
 				.SetThreadName(title)
@@ -100,6 +100,16 @@ namespace DiscordWebhook.Samples {
 				Debug.Log($"Success! {result.response}");
 				string url = result.GetMessageURL(serverId);
 				Debug.Log(url);
+				
+				if (result.response.HasValue) {
+					var channelId = result.response.Value.channel_id;
+					WebhookBuilder.CreateForum(forumWebhookUrl)
+						.SetUsername("Reply Bot")
+						.SetRepliedThreadId(channelId)
+						.SetContent("Thank you for your report!")
+						.ExecuteAsync()
+						.Forget();
+				}
 			}
 		}
 #else
