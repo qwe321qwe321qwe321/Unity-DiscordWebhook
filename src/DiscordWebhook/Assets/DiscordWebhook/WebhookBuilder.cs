@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Web;
 using UnityEngine;
 using UnityEngine.Networking;
 using Object = UnityEngine.Object;
@@ -460,12 +459,12 @@ namespace DiscordWebhook {
 		
 		private Uri BuildUri() {
 			var uriBuilder = new UriBuilder(m_WebhookUrl);
-			var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+			var query = HttpQueryUtility.ParseQueryString(uriBuilder.Query);
 			query["wait"] = m_DisableWaitingForResponse ? "false" : "true";
 			if (m_RepliedThreadId != 0) {
 				query["thread_id"] = m_RepliedThreadId.ToString();
 			}
-			uriBuilder.Query = query.ToString();
+			uriBuilder.Query = HttpQueryUtility.ToQueryString(query);
 			Debug.Log(uriBuilder.Uri);
 			return uriBuilder.Uri;
 		}
