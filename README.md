@@ -130,26 +130,14 @@ private void CreateBugReportTheadToForum() {
 }
 ```
 
-### How do I get tag IDs from the forum?
-> If you need to send a post in the forum with specific tags, you might find that the API requires tag IDs you don't know. To get these tag IDs, follow the steps below. 
-> 
-> These steps are only for retrieving tag IDs and they will not change, so you can revoke the bot and remove the code once you have the tag IDs.
+### Where can I find my User/Server/Message/Tag ID?
+Turn on the Developer Mode and right-click on them. 
 
-1. Create a Discord Bot and invite it to your server. (See [Discord Developer Portal: Getting Started](https://discord.com/developers/docs/quick-start/getting-started))
-2. Get your bot token.
-3. Get your forum channel ID.
+(See More: https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID)
 
-Then you can dump the forum tag IDs by using the [DiscordBotApi](/src/DiscordWebhook/Assets/DiscordWebhook/Utility/DiscordBotApi.cs) we provide.
-```csharp
-var tags = await DiscordBotApi.GetForumAvailableTags("bot_token", "forum_channel_id");
-if (tags != null) {
-    foreach (var tagObject in tags) {
-        Debug.Log($"Tag: {tagObject}");
-    }
-} else {
-    Debug.LogError("Failed to get tags.");
-}
-```
+How to find the Tag ID from forums?
+
+![](https://github.com/user-attachments/assets/f6880bb0-d732-47bf-aa52-53aefe651157)😜right-click on it.
 
 ## Use Cases
 ***CAVEAT: You should never directly expose your webhook token in a public product, as this poses a risk of allowing anyone to send any message through the webhook. The use cases here are either a limited scope of confidential users or implementing thier own backends to prevent from exposing the token to clients.***
