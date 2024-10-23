@@ -12,8 +12,8 @@ namespace DiscordWebhook {
                 $"* OS: {SystemInfo.operatingSystem} \n" +
                 
                 $"* Screen: {Screen.width}x{Screen.height} @{GetMonitorRefreshRateHz()}, fullScreenMode={Screen.fullScreenMode}, vSync={QualitySettings.vSyncCount}, targetFrameRate={Application.targetFrameRate}\n" +
-                $"* buildGUID: {Application.buildGUID}, isEditor={Application.isEditor}\n" +
-                $"* Unity: {Application.unityVersion}\n"
+				$"* Application.buildGUID: {Application.buildGUID}, isEditor={Application.isEditor}, platform={Application.platform}\n" +
+				$"* Unity: {Application.unityVersion}\n"
                 ;
         }
 
