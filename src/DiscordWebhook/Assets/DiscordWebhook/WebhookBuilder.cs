@@ -213,6 +213,43 @@ namespace DiscordWebhook {
 		}
 
 		/// <summary>
+		/// [Optional] Add all files in the directory to the message.
+		/// </summary>
+		/// <param name="directoryPath"></param>
+		/// <returns></returns>
+		public WebhookBuilder AddFilesInDirectory(string directoryPath) {
+			if (m_AdditionalFiles == null) {
+				m_AdditionalFiles = new List<AdditionalFile>();
+			}
+
+			// foreach file in directory
+			foreach (var filePath in System.IO.Directory.GetFiles(directoryPath)) {
+				m_AdditionalFiles.Add(AdditionalFile.FromPath(filePath));
+			}
+			return this;
+		}
+		
+
+		/// <summary>
+		/// [Optional] Add all files in the directory to the message.
+		/// </summary>
+		/// <param name="directoryPath"></param>
+		/// <param name="searchPattern"></param>
+		/// <param name="searchOption"></param>
+		/// <returns></returns>
+		public WebhookBuilder AddFilesInDirectory(string directoryPath, string searchPattern, System.IO.SearchOption searchOption) {
+			if (m_AdditionalFiles == null) {
+				m_AdditionalFiles = new List<AdditionalFile>();
+			}
+
+			// foreach file in directory
+			foreach (var filePath in System.IO.Directory.GetFiles(directoryPath, searchPattern, searchOption)) {
+				m_AdditionalFiles.Add(AdditionalFile.FromPath(filePath));
+			}
+			return this;
+		}
+
+		/// <summary>
 		/// [Optional] Set whether to compress all additional files to a zip file.
 		/// </summary>
 		/// <param name="compressAllFilesToZip"></param>
