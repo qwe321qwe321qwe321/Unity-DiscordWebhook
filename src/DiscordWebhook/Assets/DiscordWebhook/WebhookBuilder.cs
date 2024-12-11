@@ -502,7 +502,7 @@ namespace DiscordWebhook {
 				query["thread_id"] = m_RepliedThreadId.ToString();
 			}
 			uriBuilder.Query = HttpQueryUtility.ToQueryString(query);
-			Debug.Log(uriBuilder.Uri);
+			//Debug.Log(uriBuilder.Uri);
 			return uriBuilder.Uri;
 		}
 
