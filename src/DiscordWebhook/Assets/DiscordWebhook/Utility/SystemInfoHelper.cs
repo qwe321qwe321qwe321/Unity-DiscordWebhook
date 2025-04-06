@@ -10,6 +10,7 @@ namespace DiscordWebhook {
                 $"* GPU Memory Size: {SystemInfo.graphicsMemorySize} \n" +
                 $"* Graphics API: {SystemInfo.graphicsDeviceType}\n" +
                 $"* OS: {SystemInfo.operatingSystem} \n" +
+                $"* Device Model: {SystemInfo.deviceModel} \n" +
                 
                 $"* Screen: {Screen.width}x{Screen.height} @{GetMonitorRefreshRateHz()}, fullScreenMode={Screen.fullScreenMode}, vSync={QualitySettings.vSyncCount}, targetFrameRate={Application.targetFrameRate}\n" +
 				$"* Application.buildGUID: {Application.buildGUID}, isEditor={Application.isEditor}, platform={Application.platform}\n" +
