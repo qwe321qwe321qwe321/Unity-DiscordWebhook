@@ -1,4 +1,5 @@
-﻿using System.Text;
+using System.Text;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DiscordWebhook.Samples {
@@ -39,6 +40,24 @@ namespace DiscordWebhook.Samples {
 				.ExecuteCoroutine(this, null);
 		}
 
+		protected override void SendEmbedToTextChannel() {
+			WebhookBuilder.CreateTextChannel(textChannelWebhookUrl)
+				.SetUsername(m_Payload.username)
+				.AddEmbed(new DiscordEmbed {
+					title = m_Payload.title,
+					description = m_Payload.content,
+					color = DiscordColorPreset.Green,
+					fields = new [] {
+						new DiscordEmbedField {
+							name = "Username",
+							value = m_Payload.username,
+							inline = true
+						}
+					}
+				})
+				.ExecuteCoroutine(this, null);
+		}
+
 		protected override void SendPayloadToForumAndReply() {
 			WebhookBuilder.CreateForum(forumWebhookUrl)
 				.SetUsername(m_Payload.username)
@@ -53,6 +72,43 @@ namespace DiscordWebhook.Samples {
 					string url = result.GetMessageURL(serverId);
 					Debug.Log(url);
 					
+					if (result.response.HasValue) {
+						var channelId = result.response.Value.channel_id;
+						WebhookBuilder.CreateForum(forumWebhookUrl)
+							.SetUsername("Reply Bot")
+							.SetRepliedThreadId(channelId)
+							.SetContent("Thank you for your report!")
+							.ExecuteCoroutine(this, null);
+					}
+				}
+			}
+		}
+
+		protected override void SendEmbedToForumAndReply() {
+			WebhookBuilder.CreateForum(forumWebhookUrl)
+				.SetUsername(m_Payload.username)
+				.SetThreadName(m_Payload.title)
+				.AddEmbed(new DiscordEmbed {
+					title = m_Payload.title,
+					description = m_Payload.content,
+					color = DiscordColorPreset.Pink,
+					fields = new[] {
+						new DiscordEmbedField {
+							name = "Reporter",
+							value = m_Payload.username,
+							inline = true
+						}
+					}
+				})
+				.ExecuteCoroutine(this, OnComplete);
+
+			void OnComplete(WebhookResponseResult result) {
+				if (result.isSuccess) {
+					Debug.Log($"Success! {result.response}");
+
+					string url = result.GetMessageURL(serverId);
+					Debug.Log(url);
+
 					if (result.response.HasValue) {
 						var channelId = result.response.Value.channel_id;
 						WebhookBuilder.CreateForum(forumWebhookUrl)

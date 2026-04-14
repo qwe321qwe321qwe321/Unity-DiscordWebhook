@@ -30,6 +30,7 @@ namespace DiscordWebhook {
 
 		// optional
 		private string m_Username;
+		private List<DiscordEmbed> m_Embeds;
 		private AdditionalFile m_AttachedImage;
 		private List<AdditionalFile> m_AdditionalFiles;
 		private List<Snowflake> m_AppliedTags;
@@ -126,6 +127,57 @@ namespace DiscordWebhook {
 		/// <returns></returns>
 		public WebhookBuilder SetUsername(string username) {
 			m_Username = username;
+			return this;
+		}
+
+		/// <summary>
+		/// [Optional] Add an embed to the message. Up to 10 embeds are supported by Discord.
+		/// </summary>
+		/// <param name="embed"></param>
+		/// <returns></returns>
+		public WebhookBuilder AddEmbed(DiscordEmbed embed) {
+			if (m_Embeds == null) {
+				m_Embeds = new List<DiscordEmbed>();
+			}
+
+			m_Embeds.Add(embed);
+			return this;
+		}
+
+		/// <summary>
+		/// [Optional] Add embeds to the message. Up to 10 embeds are supported by Discord.
+		/// </summary>
+		/// <param name="embeds"></param>
+		/// <returns></returns>
+		public WebhookBuilder AddEmbeds(params DiscordEmbed[] embeds) {
+			if (embeds == null || embeds.Length == 0) {
+				return this;
+			}
+
+			if (m_Embeds == null) {
+				m_Embeds = new List<DiscordEmbed>();
+			}
+
+			m_Embeds.AddRange(embeds);
+			return this;
+		}
+
+		/// <summary>
+		/// [Optional] Clear and set embeds for the message. Up to 10 embeds are supported by Discord.
+		/// </summary>
+		/// <param name="embeds"></param>
+		/// <returns></returns>
+		public WebhookBuilder SetEmbeds(params DiscordEmbed[] embeds) {
+			if (m_Embeds == null) {
+				m_Embeds = new List<DiscordEmbed>();
+			} else {
+				m_Embeds.Clear();
+			}
+
+			if (embeds != null && embeds.Length > 0) {
+				m_Embeds.AddRange(embeds);
+			}
+
 			return this;
 		}
 
@@ -439,19 +491,26 @@ namespace DiscordWebhook {
 #endif
 
 		private bool CheckFieldErrors(out string errorMessage) {
+			bool hasContent = string.IsNullOrWhiteSpace(m_Content) == false;
+			int validEmbedCount = GetValidEmbedCount();
+			bool hasEmbeds = validEmbedCount > 0;
+			bool hasFiles = m_AttachedImage.IsValid || (m_AdditionalFiles != null && m_AdditionalFiles.Count > 0);
+
+			if (!hasContent && !hasEmbeds && !hasFiles) {
+				errorMessage = "At least one of Content, Embeds, or Files is required.";
+				return true;
+			}
+
+			if (validEmbedCount > 10) {
+				errorMessage = "A maximum of 10 embeds is supported.";
+				return true;
+			}
+
 			// Required fields
 			switch (m_ChannelType) {
 				case ChannelType.TextChannel:
-					if (string.IsNullOrEmpty(m_Content)) {
-						errorMessage = "Content is required for TextChannel webhook.";
-						return true;
-					}
 					break;
 				case ChannelType.Forum:
-					if (string.IsNullOrEmpty(m_Content)) {
-						errorMessage = "Content is required for Forum webhook.";
-						return true;
-					}
 					if (string.IsNullOrEmpty(m_ThreadName) && m_RepliedThreadId == 0) {
 						errorMessage = "ThreadName or ThreadId is required for Forum webhook.";
 						return true;
@@ -516,7 +575,7 @@ namespace DiscordWebhook {
 				jsonPayload.Add("username", username);
 			}
 
-			string content = m_Content;
+			string content = m_Content ?? string.Empty;
 			
 			if (m_ChannelType == ChannelType.Forum) {
 				if (string.IsNullOrWhiteSpace(m_ThreadName) == false) {
@@ -546,7 +605,17 @@ namespace DiscordWebhook {
 				content = content.Substring(0, MaximumContent - 3) + "...";
 				// TODO: Append the truncated content to the attached file or comment below.
 			}
-			jsonPayload.Add("content", content);
+
+			if (string.IsNullOrWhiteSpace(content) == false) {
+				jsonPayload.Add("content", content);
+			}
+
+			if (m_Embeds != null && m_Embeds.Count > 0) {
+				var embedsJson = BuildEmbedsJson();
+				if (embedsJson.Count > 0) {
+					jsonPayload.Add("embeds", embedsJson);
+				}
+			}
 			
 			WWWForm form = new();
 			form.AddField("payload_json", MiniJSON.Serialize(jsonPayload));
@@ -581,6 +650,26 @@ namespace DiscordWebhook {
 				form.AddBinaryData(fieldName, file.data,
 					string.IsNullOrWhiteSpace(file.fileName) ? fieldName : file.fileName);
 			}
+		}
+
+		private List<object> BuildEmbedsJson() {
+			var embedsJson = new List<object>();
+			if (m_Embeds == null || m_Embeds.Count == 0) {
+				return embedsJson;
+			}
+
+			foreach (var embed in m_Embeds) {
+				var embedJson = embed.ToJsonObject();
+				if (embedJson != null) {
+					embedsJson.Add(embedJson);
+				}
+			}
+
+			return embedsJson;
+		}
+
+		private int GetValidEmbedCount() {
+			return BuildEmbedsJson().Count;
 		}
 	}
 }
