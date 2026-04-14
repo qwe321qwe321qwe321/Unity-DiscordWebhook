@@ -42,9 +42,17 @@ namespace DiscordWebhook.Samples {
             if (GUILayout.Button("Send To Text Channel!")) {
                 SendPayloadToTextChannel();
             }
-            
+
+            if (GUILayout.Button("Send Embed To Text Channel!")) {
+                SendEmbedToTextChannel();
+            }
+             
             if (GUILayout.Button("Create a post and reply it!")) {
                 SendPayloadToForumAndReply();
+            }
+
+            if (GUILayout.Button("Create an embed post and reply it!")) {
+                SendEmbedToForumAndReply();
             }
 
             if (GUILayout.Button("Create a Bug report post!")) {
@@ -58,7 +66,9 @@ namespace DiscordWebhook.Samples {
         protected abstract void SayHelloWorldToTextChannel();
         protected abstract void SendScreenshotToTextChannel();
         protected abstract void SendPayloadToTextChannel();
+        protected abstract void SendEmbedToTextChannel();
         protected abstract void SendPayloadToForumAndReply();
+        protected abstract void SendEmbedToForumAndReply();
         protected abstract void CreateBugReportToForum();
     }
 }

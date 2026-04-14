@@ -6,6 +6,7 @@ Unity-DiscordWebhook is a library that allows you to easily send messages and fi
 ## Features
 * [Sending messages and create posts/threads to text channels and forums.](#getting-started)
 * [Builder pattern for creating a message.](#getting-started)
+* Send Discord embed messages.
 * Awaitable API with [UniTask](https://github.com/Cysharp/UniTask)
 * Unity Coroutine and EditorCoroutine API. (IEnumerator and callback)
 * A few Discord Bot API to query the server and channel information. 
@@ -23,6 +24,7 @@ Unity-DiscordWebhook is a library that allows you to easily send messages and fi
   - [Installation](#installation)
 - [Getting Started](#getting-started)
   - [Send a message to a text channel](#send-a-message-to-a-text-channel)
+  - [Send an embed message](#send-an-embed-message)
   - [Create a post in a forum with screenshots and log files](#create-a-post-in-a-forum-with-screenshots-and-log-files)
   - [How do I get tag IDs from the forum?](#how-do-i-get-tag-ids-from-the-forum)
 - [Use Cases](#use-cases)
@@ -47,18 +49,20 @@ https://github.com/qwe321qwe321qwe321/Unity-DiscordWebhook.git?path=src/DiscordW
 ```csharp
 WebhookResponseResult result = await WebhookBuilder.CreateTextChannel(textChannelWebhookUrl)
 	.SetUsername("MyBot") // username is optional.
-	.SetContent("Hello WORLD") // content is required.
+	.SetContent("Hello WORLD")
 	.ExecuteAsync();
 // handle the result.
 ```
+
+`WebhookBuilder` now accepts content-only, embed-only, file-only, or mixed payloads. At least one of content, embeds, or files is required.
 
 [CoroutineSample.cs](/src/DiscordWebhook/Assets/Samples/CoroutineSample.cs)
 ```csharp
 WebhookBuilder.CreateTextChannel(textChannelWebhookUrl)
 	.SetUsername("MyBot") // username is optional.
-	.SetContent("Hello WORLD") // content is required.
+	.SetContent("Hello WORLD")
 	.ExecuteCoroutine(this, (result) => {
-    	// handle the result with callback.
+     	// handle the result with callback.
 	}));
 ```
 
@@ -66,10 +70,62 @@ WebhookBuilder.CreateTextChannel(textChannelWebhookUrl)
 ```csharp
 WebhookBuilder.CreateTextChannel(textChannelWebhookUrl)
 	.SetUsername("MyBot") // username is optional.
-	.SetContent("Hello WORLD") // content is required.
+	.SetContent("Hello WORLD")
 	.ExecuteEditorCoroutine((result) => { // No need a MonoBehaviour to run.
-    	// handle the result with callback.
+     	// handle the result with callback.
 	}));
+```
+
+### Send an embed message
+[UniTaskSample.cs](/src/DiscordWebhook/Assets/Samples/UniTaskSample.cs)
+```csharp
+WebhookResponseResult result = await WebhookBuilder.CreateTextChannel(textChannelWebhookUrl)
+	.SetUsername("MyBot")
+	.AddEmbed(new DiscordEmbed {
+		title = "Build Failed",
+		description = "Windows build failed on CI.",
+		color = DiscordColorPreset.Blue,
+		footer = new DiscordEmbedFooter {
+			text = "Unity CI"
+		},
+		fields = new[] {
+			new DiscordEmbedField {
+				name = "Branch",
+				value = "main",
+				inline = true
+			},
+			new DiscordEmbedField {
+				name = "Commit",
+				value = "abc123",
+				inline = true
+			}
+		}
+	}) // embed-only messages are supported.
+	.ExecuteAsync();
+```
+
+You can also combine `.SetContent(...)` with `.AddEmbed(...)` in the same webhook message.
+Use `.AddEmbeds(...)` or `.SetEmbeds(...)` when sending multiple embeds. Discord supports up to 10 embeds per message.
+
+Forum posts can also be created with embeds only:
+
+```csharp
+WebhookResponseResult result = await WebhookBuilder.CreateForum(forumWebhookUrl)
+	.SetUsername("Bug Reporter")
+	.SetThreadName("Player stuck in elevator")
+	.AddEmbed(new DiscordEmbed {
+		title = "Bug Report",
+		description = "Player gets stuck after interacting with the elevator panel.",
+		color = DiscordColorPreset.Pink,
+		fields = new[] {
+			new DiscordEmbedField {
+				name = "Reporter",
+				value = "QA-01",
+				inline = true
+			}
+		}
+	})
+	.ExecuteAsync();
 ```
 
 
